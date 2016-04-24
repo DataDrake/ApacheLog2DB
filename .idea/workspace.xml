@@ -2,14 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="7a917e3d-edf1-4595-925b-e9a597ce820d" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/ApacheLog2DB/destination/destination.go" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/ApacheLog2DB/source/source.go" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/ApacheLog2DB/transaction/transaction.go" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/ApacheLog2DB/user/user.go" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.gitignore" afterPath="$PROJECT_DIR$/.gitignore" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/ApacheLog2DB/agent/userAgent.go" afterPath="$PROJECT_DIR$/src/ApacheLog2DB/agent/userAgent.go" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/ApacheLog2DB/agent/userAgent_test.go" afterPath="$PROJECT_DIR$/src/ApacheLog2DB/agent/userAgent_test.go" />
     </list>
     <ignored path="ApacheLog2DB.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -66,14 +59,24 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="user.go" pinned="false" current-in-tab="true">
+      <file leaf-file-name="user.go" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/ApacheLog2DB/user/user.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="3.84">
+            <state vertical-scroll-proportion="0.0">
               <caret line="80" column="23" selection-start-line="80" selection-start-column="23" selection-end-line="80" selection-end-column="23" />
               <folding>
                 <element signature="e#13#34#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name=".gitignore" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/.gitignore">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.24">
+              <caret line="5" column="0" selection-start-line="5" selection-start-column="0" selection-end-line="6" selection-end-column="9" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -118,7 +121,6 @@
     <option name="CHANGED_PATHS">
       <list>
         <option value="$PROJECT_DIR$/src/ApacheLog2DB/userAgent.go" />
-        <option value="$PROJECT_DIR$/.gitignore" />
         <option value="$PROJECT_DIR$/src/ApacheLog2DB/agent/userAgent_test.go" />
         <option value="$PROJECT_DIR$/src/ApacheLog2DB/agent/userAgent.go" />
         <option value="$PROJECT_DIR$/src/ApacheLog2DB/transaction.go" />
@@ -128,6 +130,7 @@
         <option value="$PROJECT_DIR$/src/ApacheLog2DB/source/source.go" />
         <option value="$PROJECT_DIR$/src/ApacheLog2DB/user/user.go" />
         <option value="$PROJECT_DIR$/src/ApacheLog2DB/destination/destination.go" />
+        <option value="$PROJECT_DIR$/.gitignore" />
       </list>
     </option>
   </component>
@@ -482,14 +485,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/.gitignore">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/ApacheLog2DB/agent/userAgent_test.go">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -542,11 +537,19 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/ApacheLog2DB/user/user.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="3.84">
+        <state vertical-scroll-proportion="0.0">
           <caret line="80" column="23" selection-start-line="80" selection-start-column="23" selection-end-line="80" selection-end-column="23" />
           <folding>
             <element signature="e#13#34#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/.gitignore">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.24">
+          <caret line="5" column="0" selection-start-line="5" selection-start-column="0" selection-end-line="6" selection-end-column="9" />
+          <folding />
         </state>
       </provider>
     </entry>
