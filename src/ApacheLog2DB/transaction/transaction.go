@@ -36,12 +36,12 @@ func CreateTable(d *sql.DB) error {
 						"referrer TEXT, " +
 						"occured DATETIME, " +
 						"sourceid INTEGER, " +
-						"FOREIGN KEY(sourceid) REFERENCES sources(id), " +
 						"destid INTEGER, " +
-						"FOREIGN KEY(destid) REFERENCES destinations(id), " +
 						"agentid INTEGER, " +
-						"FOREIGN KEY(agentid) REFERENCES user_agents(id), " +
 						"userid INTEGER, " +
+						"FOREIGN KEY(sourceid) REFERENCES sources(id), " +
+						"FOREIGN KEY(destid) REFERENCES destinations(id), " +
+						"FOREIGN KEY(agentid) REFERENCES user_agents(id), " +
 						"FOREIGN KEY(userid) REFERENCES users(id)" +
 						" )")
 		if err != nil {
@@ -94,9 +94,13 @@ func Read(d *sql.DB, id int) (*Transaction,error) {
 			var userid int
 			row.Scan(&id,&ident,&verb,&protocol,&status,&size,&referrer,&occurred,&sourceid,&destid,&agentid,&userid)
 			source,err := source.Read(d,sourceid)
+			if err != nil {return nil,err}
 			dest,err := destination.Read(d,destid)
+			if err != nil {return nil,err}
 			agent,err := agent.Read(d,agentid)
+			if err != nil {return nil,err}
 			user,err := user.Read(d,userid)
+			if err != nil {return nil,err}
 			t = &Transaction{id,ident,verb,protocol,status,size,referrer,occurred,source,dest,agent,user}
 		}
 	}
@@ -125,18 +129,26 @@ func ReadAll(db *sql.DB) ([]*Transaction,error) {
 			var userid int
 			rows.Scan(&id,&ident,&verb,&protocol,&status,&size,&referrer,&occurred,&sourceid,&destid,&agentid,&userid)
 			s,err := source.Read(db,sourceid)
+			if err != nil {return nil,err}
 			d,err := destination.Read(db,destid)
+			if err != nil {return nil,err}
 			a,err := agent.Read(db,agentid)
+			if err != nil {return nil,err}
 			u,err := user.Read(db,userid)
+			if err != nil {return nil,err}
 			if id >=0 {
 				t = append(t,&Transaction{id,ident,verb,protocol,status,size,referrer,occurred,s,d,a,u})
 			}
 			for rows.Next() {
 				rows.Scan(&id,&ident,&verb,&protocol,&status,&size,&referrer,&occurred,&sourceid,&destid,&agentid,&userid)
 				s,err := source.Read(db,sourceid)
+				if err != nil {return nil,err}
 				d,err := destination.Read(db,destid)
+				if err != nil {return nil,err}
 				a,err := agent.Read(db,agentid)
+				if err != nil {return nil,err}
 				u,err := user.Read(db,userid)
+				if err != nil {return nil,err}
 
 				if id >= 0 {
 					t = append(t,&Transaction{id,ident,verb,protocol,status,size,referrer,occurred,s,d,a,u})
