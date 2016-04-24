@@ -2,8 +2,8 @@ package source
 import "database/sql"
 
 type Source struct{
-	id int
-	ip string
+	ID int
+	IP string
 }
 
 func CreateTable(d *sql.DB) error {
@@ -22,7 +22,7 @@ func CreateTable(d *sql.DB) error {
 func Insert(d *sql.DB, s *Source) error {
 	tx,err := d.Begin()
 	if err == nil {
-		_,err = tx.Exec("INSERT INTO sources VALUES( NULL , ? )", s.ip)
+		_,err = tx.Exec("INSERT INTO sources VALUES( NULL , ? )", s.IP)
 		if err != nil {
 			tx.Rollback()
 		} else {
@@ -32,11 +32,11 @@ func Insert(d *sql.DB, s *Source) error {
 	return err
 }
 
-func Read(d *sql.DB, ip string) (*Source,error) {
+func Read(d *sql.DB, id int) (*Source,error) {
 	var s *Source
 	tx,err := d.Begin()
 	if err == nil {
-		row := tx.QueryRow("SELECT * FROM sources WHERE id=?",ip)
+		row := tx.QueryRow("SELECT * FROM sources WHERE id=?", id)
 		if row != nil {
 			tx.Rollback()
 		} else {
@@ -80,7 +80,7 @@ func ReadAll(d *sql.DB) ([]*Source,error) {
 func Update(d *sql.DB, s *Source) error {
 	tx,err := d.Begin()
 	if err == nil {
-		_,err = tx.Query("UPDATE sources SET ip=? WHERE id=?", s.ip, s.id)
+		_,err = tx.Query("UPDATE sources SET ip=? WHERE id=?", s.IP, s.ID)
 		if err != nil {
 			tx.Rollback()
 		} else {

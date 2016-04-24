@@ -3,8 +3,8 @@ package destination
 import "database/sql"
 
 type Destination struct{
-	id int
-	uri string
+	ID  int
+	URI string
 }
 
 func CreateTable(d *sql.DB) error {
@@ -23,7 +23,7 @@ func CreateTable(d *sql.DB) error {
 func Insert(db *sql.DB, d *Destination) error {
 	tx,err := db.Begin()
 	if err == nil {
-		_,err = tx.Exec("INSERT INTO destinations VALUES( NULL , ? )", d.uri)
+		_,err = tx.Exec("INSERT INTO destinations VALUES( NULL , ? )", d.URI)
 		if err != nil {
 			tx.Rollback()
 		} else {
@@ -33,11 +33,11 @@ func Insert(db *sql.DB, d *Destination) error {
 	return err
 }
 
-func Read(db *sql.DB, ip string) (*Destination,error) {
+func Read(db *sql.DB, id int) (*Destination,error) {
 	var d *Destination
 	tx,err := db.Begin()
 	if err == nil {
-		row := tx.QueryRow("SELECT * FROM destinations WHERE id=?",ip)
+		row := tx.QueryRow("SELECT * FROM destinations WHERE id=?", id)
 		if row != nil {
 			tx.Rollback()
 		} else {
@@ -81,7 +81,7 @@ func ReadAll(d *sql.DB) ([]*Destination,error) {
 func Update(db *sql.DB, d *Destination) error {
 	tx,err := db.Begin()
 	if err == nil {
-		_,err = tx.Query("UPDATE destinations SET uri=? WHERE id=?", d.uri, d.id)
+		_,err = tx.Query("UPDATE destinations SET uri=? WHERE id=?", d.URI, d.ID)
 		if err != nil {
 			tx.Rollback()
 		} else {

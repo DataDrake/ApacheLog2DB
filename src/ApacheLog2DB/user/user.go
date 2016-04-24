@@ -2,8 +2,8 @@ package user
 import "database/sql"
 
 type User struct{
-	id int
-	name string
+	ID   int
+	Name string
 }
 
 func CreateTable(d *sql.DB) error {
@@ -22,7 +22,7 @@ func CreateTable(d *sql.DB) error {
 func Insert(d *sql.DB, u *User) error {
 	tx,err := d.Begin()
 	if err == nil {
-		_,err = tx.Exec("INSERT INTO users VALUES( NULL , ? )", u.name)
+		_,err = tx.Exec("INSERT INTO users VALUES( NULL , ? )", u.Name)
 		if err != nil {
 			tx.Rollback()
 		} else {
@@ -32,11 +32,11 @@ func Insert(d *sql.DB, u *User) error {
 	return err
 }
 
-func Read(d *sql.DB, name string) (*User,error) {
+func Read(d *sql.DB, id int) (*User,error) {
 	var u *User
 	tx,err := d.Begin()
 	if err == nil {
-		row := tx.QueryRow("SELECT * FROM users WHERE id=?",name)
+		row := tx.QueryRow("SELECT * FROM users WHERE id=?", id)
 		if row != nil {
 			tx.Rollback()
 		} else {
@@ -80,7 +80,7 @@ func ReadAll(d *sql.DB) ([]*User,error) {
 func Update(d *sql.DB, u *User) error {
 	tx,err := d.Begin()
 	if err == nil {
-		_,err = tx.Query("UPDATE users SET name=? WHERE id=?", u.name, u.id)
+		_,err = tx.Query("UPDATE users SET name=? WHERE id=?", u.Name, u.ID)
 		if err != nil {
 			tx.Rollback()
 		} else {
