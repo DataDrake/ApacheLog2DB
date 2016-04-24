@@ -1,15 +1,48 @@
-package agent
-import "database/sql"
+package transaction
+import (
+	"database/sql"
+	"time"
+	"ApacheLog2DB/source"
+	"ApacheLog2DB/agent"
+	"ApacheLog2DB/destination"
+)
 
-type UserAgent struct{
+type Transaction struct{
 	id int
-	name string
+	ident string
+	verb string
+	protocol string
+	status int
+	size int
+	referrer string
+	occurred time.Time
+	source *source.Source
+	dest *destination.Destination
+	agent *agent.UserAgent
+	user *user.User
 }
 
 func CreateTable(d *sql.DB) error {
 	tx,err := d.Begin()
 	if err == nil {
-		_,err = tx.Exec("CREATE TABLE user_agents ( id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT )")
+		_,err = tx.Exec("CREATE TABLE transactions" +
+						"( id INTEGER PRIMARY KEY AUTOINCREMENT," +
+						"ident TEXT, " +
+						"verb TEXT, " +
+						"protocol TEST, " +
+						"status INTEGER, " +
+						"size INTEGER, " +
+						"referrer TEXT, " +
+						"occured DATETIME, " +
+						"sourceid INTEGER, " +
+						"FOREIGN KEY(sourceid) REFERENCES sources(id), " +
+						"destid INTEGER, " +
+						"FOREIGN KEY(destid) REFERENCES destinations(id), " +
+						"agentid INTEGER, " +
+						"FOREIGN KEY(agentid) REFERENCES user_agents(id), " +
+						"userid INTEGER, " +
+						"FOREIGN KEY(userid) REFERENCES users(id)" +
+						" )")
 		if err != nil {
 			tx.Rollback()
 		} else {
