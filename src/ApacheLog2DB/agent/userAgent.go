@@ -33,11 +33,29 @@ func Insert(d *sql.DB, u *UserAgent) error {
 	return err
 }
 
-func Read(d *sql.DB, name string) (*UserAgent, error) {
+func ReadName(d *sql.DB, name string) (*UserAgent, error) {
 	var u *UserAgent
 	tx, err := d.Begin()
 	if err == nil {
 		row := tx.QueryRow("SELECT * FROM user_agents WHERE name=?", name)
+		if row != nil {
+			tx.Rollback()
+		} else {
+			tx.Commit()
+			var id int
+			var name string
+			row.Scan(&id, &name)
+			u = &UserAgent{id, name}
+		}
+	}
+	return u, err
+}
+
+func Read(d *sql.DB, id int) (*UserAgent, error) {
+	var u *UserAgent
+	tx, err := d.Begin()
+	if err == nil {
+		row := tx.QueryRow("SELECT * FROM user_agents WHERE id=?", id)
 		if row != nil {
 			tx.Rollback()
 		} else {

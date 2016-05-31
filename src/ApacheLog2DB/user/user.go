@@ -33,11 +33,29 @@ func Insert(d *sql.DB, u *User) error {
 	return err
 }
 
-func Read(d *sql.DB, name string) (*User, error) {
+func ReadName(d *sql.DB, name string) (*User, error) {
 	var u *User
 	tx, err := d.Begin()
 	if err == nil {
 		row := tx.QueryRow("SELECT * FROM users WHERE name=?", name)
+		if row != nil {
+			tx.Rollback()
+		} else {
+			tx.Commit()
+			var id int
+			var name string
+			row.Scan(&id, &name)
+			u = &User{id, name}
+		}
+	}
+	return u, err
+}
+
+func Read(d *sql.DB, id int) (*User, error) {
+	var u *User
+	tx, err := d.Begin()
+	if err == nil {
+		row := tx.QueryRow("SELECT * FROM users WHERE id=?", int)
 		if row != nil {
 			tx.Rollback()
 		} else {
