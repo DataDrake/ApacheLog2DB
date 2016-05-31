@@ -6,7 +6,6 @@ import (
 	"flag"
 	"fmt"
 	_ "github.com/mattn/go-sqlite3"
-	"io"
 	"os"
 )
 
@@ -29,17 +28,15 @@ func main() {
 
 	var db *sql.DB
 	var err error
-	var reader *io.Reader
-	var writer *io.Writer
+	reader := os.Stdin
+	writer := os.Stdout
 
 	if !export {
-		if (args[0] == "-") || (args[0] == "--") {
-			reader = os.Stdin
-		} else {
+		if !(args[0] == "-" || args[0] == "--") {
 			reader, err = os.Open(args[0])
 		}
 	} else {
-		if !(args[0] == "-") && !(args[0] == "--") {
+		if args[0] == "-" || args[0] == "--" {
 			fmt.Fprintf(os.Stderr, "Input file must be a db string")
 			os.Exit(1)
 		}
@@ -52,15 +49,13 @@ func main() {
 	}
 
 	if !export {
-		if (args[1] == "-") || (args[1] == "--") {
+		if args[1] == "-" || args[1] == "--" {
 			fmt.Fprintf(os.Stderr, "Output file must be a db string")
 			os.Exit(1)
 		}
 		db, err = sql.Open("sqlite3", args[1])
 	} else {
-		if (args[1] == "-") || (args[1] == "--") {
-			writer = os.Stdout
-		} else {
+		if !(args[1] == "-" || args[1] == "--") {
 			writer, err = os.Open(args[1])
 		}
 	}
