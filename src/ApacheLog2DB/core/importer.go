@@ -24,7 +24,8 @@ func ImportLog(log io.Reader, db *sql.DB) {
 	}
 	scan := bufio.NewScanner(log)
 	for scan.Scan() {
-		line := APACHE_COMBINED.FindStringSubmatch(scan.Text())
+		l := scan.Text()
+		line := APACHE_COMBINED.FindStringSubmatch(l)
 		if line != nil {
 
 			//Get Source
@@ -105,6 +106,8 @@ func ImportLog(log io.Reader, db *sql.DB) {
 				fmt.Fprintf(os.Stderr, "[TXN] Warning: %s\n", err.Error())
 				continue
 			}
+		} else {
+			fmt.Fprintf(os.Stderr,"Line did not match: %s\n", l)
 		}
 	}
 }
