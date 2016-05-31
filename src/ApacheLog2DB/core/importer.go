@@ -4,10 +4,14 @@ import (
 	"strconv"
 	"strings"
 	"time"
+	"io"
+	"bufio"
 )
 
-func ImportLog(log string) error {
-	for _, line := range APACHE_COMBINED.FindAllStringSubmatch(log, -1) {
+func ImportLog(log *io.Reader) error {
+	scan := bufio.NewScanner(log)
+	for scan.Scan() {
+		_, line := APACHE_COMBINED.FindAllStringSubmatch(scan.Text(), -1)
 		source := line[1]
 		ident := line[2]
 		username := line[3]
