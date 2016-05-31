@@ -31,7 +31,7 @@ func main() {
 	reader := os.Stdin
 	writer := os.Stdout
 
-	if !export {
+	if !*export {
 		if !(args[0] == "-" || args[0] == "--") {
 			reader, err = os.Open(args[0])
 		}
@@ -48,7 +48,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	if !export {
+	if !*export {
 		if args[1] == "-" || args[1] == "--" {
 			fmt.Fprintf(os.Stderr, "Output file must be a db string")
 			os.Exit(1)
@@ -65,7 +65,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	if export {
+	if *export {
 		core.ExportLog(db, writer)
 	} else {
 		core.ImportLog(reader, db)

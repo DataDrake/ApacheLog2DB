@@ -11,12 +11,11 @@ func NewSource(ip string) *Source {
 	return &Source{-1, ip}
 }
 
-func ReadOrCreate(db *sql.DB, ip string) (*Source, error) {
-	src, err := ReadIP(db, ip)
+func ReadOrCreate(db *sql.DB, IP string) (*Source, error) {
+	src, err := ReadIP(db, IP)
 	if err != nil {
-		src = NewSource(ip)
-		err = Insert(db, src)
-		src, err = ReadIP(db, ip)
+		err = Insert(db, NewSource(IP))
+		src, err = ReadIP(db, IP)
 	}
 	return src, err
 }
