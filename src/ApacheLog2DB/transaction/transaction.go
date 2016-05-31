@@ -102,24 +102,22 @@ func Read(d *sql.DB, id int) (*Transaction, error) {
 
 func ReadAll(db *sql.DB) ([]*Transaction, error) {
 	t := make([]*Transaction, 0)
-	tx, err := db.Begin()
+	rows, err := db.Query("SELECT * FROM txns")
 	if err == nil {
-		rows, err := tx.Query("SELECT * FROM txns")
-		if err != nil {
-			tx.Rollback()
-		} else {
-			var id int
-			var ident string
-			var verb string
-			var protocol string
-			var status int
-			var size int
-			var referrer string
-			var occurred time.Time
-			var sourceid int
-			var destid int
-			var agentid int
-			var userid int
+		var id int
+		var ident string
+		var verb string
+		var protocol string
+		var status int
+		var size int
+		var referrer string
+		var occurred time.Time
+		var sourceid int
+		var destid int
+		var agentid int
+		var userid int
+
+		for rows.Next() {
 			rows.Scan(&id, &ident, &verb, &protocol, &status, &size, &referrer, &occurred, &sourceid, &destid, &agentid, &userid)
 			s, err := source.Read(db, sourceid)
 			if err != nil {
@@ -137,35 +135,12 @@ func ReadAll(db *sql.DB) ([]*Transaction, error) {
 			if err != nil {
 				return nil, err
 			}
+
 			if id >= 0 {
 				t = append(t, &Transaction{id, ident, verb, protocol, status, size, referrer, occurred, s, d, a, u})
 			}
-			for rows.Next() {
-				rows.Scan(&id, &ident, &verb, &protocol, &status, &size, &referrer, &occurred, &sourceid, &destid, &agentid, &userid)
-				s, err := source.Read(db, sourceid)
-				if err != nil {
-					return nil, err
-				}
-				d, err := destination.Read(db, destid)
-				if err != nil {
-					return nil, err
-				}
-				a, err := agent.Read(db, agentid)
-				if err != nil {
-					return nil, err
-				}
-				u, err := user.Read(db, userid)
-				if err != nil {
-					return nil, err
-				}
-
-				if id >= 0 {
-					t = append(t, &Transaction{id, ident, verb, protocol, status, size, referrer, occurred, s, d, a, u})
-				}
-			}
-			rows.Close()
-			tx.Commit()
 		}
+		rows.Close()
 	}
 	return t, err
 }

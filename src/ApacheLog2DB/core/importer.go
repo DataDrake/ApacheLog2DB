@@ -12,7 +12,6 @@ import (
 	"io"
 	"os"
 	"strconv"
-	"strings"
 	"time"
 )
 
@@ -53,22 +52,11 @@ func ImportLog(log io.Reader, db *sql.DB) {
 			}
 
 			// Parse request string
-			request := strings.Split(line[5], " ")
+			request := APACHE_REQUEST.FindStringSubmatch(line[5])
+			verb := request[1]
+			uri := request[2]
+			protocol := request[3]
 
-			var verb string
-			var uri string
-			var protocol string
-			switch len(request) {
-			case 3:
-				verb = request[0]
-				uri = request[1]
-				protocol = request[2]
-			case 2:
-				uri = request[0]
-				protocol = request[1]
-			case 1:
-				uri = request[0]
-			}
 
 			dest, err := destination.ReadOrCreate(db, uri)
 			if err != nil {

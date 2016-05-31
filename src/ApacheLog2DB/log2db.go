@@ -59,7 +59,7 @@ func main() {
 		defer db.Close()
 	} else {
 		if !(args[1] == "-" || args[1] == "--") {
-			writer, err = os.Open(args[1])
+			writer, err = os.Create(args[1])
 			defer writer.Close()
 		}
 	}

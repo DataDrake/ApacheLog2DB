@@ -22,19 +22,37 @@ func ExportLog(db *sql.DB, w io.Writer) {
 		os.Exit(1)
 	}
 	for _,txn := range txns {
-		fmt.Fprintln(
+		request := ""
+		lV := len(txn.Verb)
+		lU := len(txn.Dest.URI)
+		lP := len(txn.Protocol)
+		if lV > 0 {
+			request = txn.Verb
+
+		}
+		if len(request) > 0  && lU > 0{
+			request = request + " " + txn.Dest.URI
+		} else if lU > 0 {
+			request = txn.Dest.URI
+		}
+
+		if len(request) > 0  && lP > 0{
+			request = request + " " + txn.Protocol
+		} else if lP > 0 {
+			request = txn.Protocol
+		}
+
+		fmt.Fprintf(
 			w,
 			APACHE_COMBINED_FORMAT,
 			safe_string(txn.Source.IP),
 			safe_string(txn.Ident),
 			safe_string(txn.User.Name),
 			txn.Occurred.Format(APACHE_TIME_LAYOUT),
-			txn.Verb,
-			txn.Dest.URI,
-			txn.Protocol,
+			request,
 			txn.Status,
 			txn.Size,
-			safe_string(txn.Referrer),
+			txn.Referrer,
 			safe_string(txn.Agent.Name),
 		)
 	}
