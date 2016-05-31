@@ -62,7 +62,7 @@ func CreateAllTables(db *sql.DB) error {
 		}
 	}
 
-	if SliceContains(missing, "transactions") {
+	if SliceContains(missing, "txns") {
 		err = transaction.CreateTable(db)
 	}
 	return err

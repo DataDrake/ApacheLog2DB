@@ -34,6 +34,7 @@ func main() {
 	if !*export {
 		if !(args[0] == "-" || args[0] == "--") {
 			reader, err = os.Open(args[0])
+			defer reader.Close()
 		}
 	} else {
 		if args[0] == "-" || args[0] == "--" {
@@ -41,6 +42,7 @@ func main() {
 			os.Exit(1)
 		}
 		db, err = sql.Open("sqlite3", args[0])
+		defer db.Close()
 	}
 
 	if err != nil {
@@ -54,9 +56,11 @@ func main() {
 			os.Exit(1)
 		}
 		db, err = sql.Open("sqlite3", args[1])
+		defer db.Close()
 	} else {
 		if !(args[1] == "-" || args[1] == "--") {
 			writer, err = os.Open(args[1])
+			defer writer.Close()
 		}
 	}
 
@@ -70,6 +74,5 @@ func main() {
 	} else {
 		core.ImportLog(reader, db)
 	}
-
 	os.Exit(0)
 }

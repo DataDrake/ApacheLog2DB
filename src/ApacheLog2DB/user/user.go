@@ -1,6 +1,9 @@
 package user
 
-import "database/sql"
+import (
+	"database/sql"
+	"errors"
+)
 
 type User struct {
 	ID   int
@@ -16,49 +19,34 @@ func ReadOrCreate(db *sql.DB, name string) (*User, error) {
 	if err != nil {
 		src = NewUser(name)
 		err = Insert(db, src)
-		src, err = ReadName(db, name)
+		if err == nil {
+			src, err = ReadName(db, name)
+		}
 	}
 	return src, err
 }
 
 func CreateTable(d *sql.DB) error {
-	tx, err := d.Begin()
-	if err == nil {
-		_, err = tx.Exec("CREATE TABLE users ( id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT )")
-		if err != nil {
-			tx.Rollback()
-		} else {
-			tx.Commit()
-		}
-	}
+	_, err := d.Exec("CREATE TABLE users ( id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT )")
 	return err
 }
 
 func Insert(d *sql.DB, u *User) error {
-	tx, err := d.Begin()
-	if err == nil {
-		_, err = tx.Exec("INSERT INTO users VALUES( NULL , ? )", u.Name)
-		if err != nil {
-			tx.Rollback()
-		} else {
-			tx.Commit()
-		}
-	}
+	_, err := d.Exec("INSERT INTO users VALUES( NULL , ? )", u.Name)
 	return err
 }
 
 func ReadName(d *sql.DB, name string) (*User, error) {
 	var u *User
-	tx, err := d.Begin()
-	if err == nil {
-		row := tx.QueryRow("SELECT * FROM users WHERE name=?", name)
-		if row != nil {
-			tx.Rollback()
-		} else {
-			tx.Commit()
-			var id int
-			var name string
-			row.Scan(&id, &name)
+	var err error
+	row := d.QueryRow("SELECT * FROM users WHERE name=?", name)
+	if row == nil {
+		err = errors.New("User not found")
+	} else {
+		var id int
+		var name string
+		err = row.Scan(&id, &name)
+		if err == nil {
 			u = &User{id, name}
 		}
 	}
@@ -67,16 +55,15 @@ func ReadName(d *sql.DB, name string) (*User, error) {
 
 func Read(d *sql.DB, id int) (*User, error) {
 	var u *User
-	tx, err := d.Begin()
-	if err == nil {
-		row := tx.QueryRow("SELECT * FROM users WHERE id=?", id)
-		if row != nil {
-			tx.Rollback()
-		} else {
-			tx.Commit()
-			var id int
-			var name string
-			row.Scan(&id, &name)
+	var err error
+	row := d.QueryRow("SELECT * FROM users WHERE id=?", id)
+	if row == nil {
+		err = errors.New("User not found")
+	} else {
+		var id int
+		var name string
+		err = row.Scan(&id, &name)
+		if err == nil {
 			u = &User{id, name}
 		}
 	}
@@ -111,14 +98,6 @@ func ReadAll(d *sql.DB) ([]*User, error) {
 }
 
 func Update(d *sql.DB, u *User) error {
-	tx, err := d.Begin()
-	if err == nil {
-		_, err = tx.Query("UPDATE users SET name=? WHERE id=?", u.Name, u.ID)
-		if err != nil {
-			tx.Rollback()
-		} else {
-			tx.Commit()
-		}
-	}
+	_, err := d.Query("UPDATE users SET name=? WHERE id=?", u.Name, u.ID)
 	return err
 }

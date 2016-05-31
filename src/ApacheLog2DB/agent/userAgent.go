@@ -1,6 +1,9 @@
 package agent
 
-import "database/sql"
+import (
+	"database/sql"
+	"errors"
+)
 
 type UserAgent struct {
 	ID   int
@@ -15,49 +18,34 @@ func ReadOrCreate(db *sql.DB, name string) (*UserAgent, error) {
 	agent, err := ReadName(db, name)
 	if err != nil {
 		err = Insert(db, NewAgent(name))
-		agent, err = ReadName(db, name)
+		if err == nil {
+			agent, err = ReadName(db, name)
+		}
 	}
 	return agent, err
 }
 
 func CreateTable(d *sql.DB) error {
-	tx, err := d.Begin()
-	if err == nil {
-		_, err = tx.Exec("CREATE TABLE user_agents ( id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT )")
-		if err != nil {
-			tx.Rollback()
-		} else {
-			tx.Commit()
-		}
-	}
+	_, err := d.Exec("CREATE TABLE user_agents ( id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT )")
 	return err
 }
 
 func Insert(d *sql.DB, u *UserAgent) error {
-	tx, err := d.Begin()
-	if err == nil {
-		_, err = tx.Exec("INSERT INTO user_agents VALUES( NULL , ? )", u.Name)
-		if err != nil {
-			tx.Rollback()
-		} else {
-			tx.Commit()
-		}
-	}
+	_, err := d.Exec("INSERT INTO user_agents VALUES( NULL , ? )", u.Name)
 	return err
 }
 
 func ReadName(d *sql.DB, name string) (*UserAgent, error) {
 	var u *UserAgent
-	tx, err := d.Begin()
-	if err == nil {
-		row := tx.QueryRow("SELECT * FROM user_agents WHERE name=?", name)
-		if row != nil {
-			tx.Rollback()
-		} else {
-			tx.Commit()
-			var id int
-			var name string
-			row.Scan(&id, &name)
+	var err error
+	row := d.QueryRow("SELECT * FROM user_agents WHERE name=?", name)
+	if row == nil {
+		err = errors.New("Agent not found")
+	} else {
+		var id int
+		var name string
+		err = row.Scan(&id,&name)
+		if err == nil {
 			u = &UserAgent{id, name}
 		}
 	}
@@ -66,16 +54,15 @@ func ReadName(d *sql.DB, name string) (*UserAgent, error) {
 
 func Read(d *sql.DB, id int) (*UserAgent, error) {
 	var u *UserAgent
-	tx, err := d.Begin()
-	if err == nil {
-		row := tx.QueryRow("SELECT * FROM user_agents WHERE id=?", id)
-		if row != nil {
-			tx.Rollback()
-		} else {
-			tx.Commit()
-			var id int
-			var name string
-			row.Scan(&id, &name)
+	var err error
+	row := d.QueryRow("SELECT * FROM user_agents WHERE id=?", id)
+	if row == nil {
+		err = errors.New("Agent not found")
+	} else {
+		var id int
+		var name string
+		err = row.Scan(&id, &name)
+		if err == nil {
 			u = &UserAgent{id, name}
 		}
 	}
@@ -110,14 +97,6 @@ func ReadAll(d *sql.DB) ([]*UserAgent, error) {
 }
 
 func Update(d *sql.DB, u *UserAgent) error {
-	tx, err := d.Begin()
-	if err == nil {
-		_, err = tx.Query("UPDATE user_agents SET name=? WHERE id=?", u.Name, u.ID)
-		if err != nil {
-			tx.Rollback()
-		} else {
-			tx.Commit()
-		}
-	}
+	_, err := d.Query("UPDATE user_agents SET name=? WHERE id=?", u.Name, u.ID)
 	return err
 }

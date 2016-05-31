@@ -1,6 +1,9 @@
 package destination
 
-import "database/sql"
+import (
+	"database/sql"
+	"errors"
+)
 
 type Destination struct {
 	ID  int
@@ -21,44 +24,27 @@ func ReadOrCreate(db *sql.DB, uri string) (*Destination, error) {
 	return dest, err
 }
 
-func CreateTable(d *sql.DB) error {
-	tx, err := d.Begin()
-	if err == nil {
-		_, err = tx.Exec("CREATE TABLE destinations ( id INTEGER PRIMARY KEY AUTOINCREMENT, uri TEXT )")
-		if err != nil {
-			tx.Rollback()
-		} else {
-			tx.Commit()
-		}
-	}
+func CreateTable(db *sql.DB) error {
+	_, err:= db.Exec("CREATE TABLE destinations ( id INTEGER PRIMARY KEY AUTOINCREMENT, uri TEXT )")
 	return err
 }
 
 func Insert(db *sql.DB, d *Destination) error {
-	tx, err := db.Begin()
-	if err == nil {
-		_, err = tx.Exec("INSERT INTO destinations VALUES( NULL , ? )", d.URI)
-		if err != nil {
-			tx.Rollback()
-		} else {
-			tx.Commit()
-		}
-	}
+	_, err := db.Exec("INSERT INTO destinations VALUES( NULL , ? )", d.URI)
 	return err
 }
 
 func ReadURI(db *sql.DB, uri string) (*Destination, error) {
 	var d *Destination
-	tx, err := db.Begin()
-	if err == nil {
-		row := tx.QueryRow("SELECT * FROM destinations WHERE uri=?", uri)
-		if row != nil {
-			tx.Rollback()
-		} else {
-			tx.Commit()
-			var id int
-			var uri string
-			row.Scan(&id, &uri)
+	var err error
+	row := db.QueryRow("SELECT * FROM destinations WHERE uri=?", uri)
+	if row == nil {
+		err = errors.New("Destination not found")
+	} else {
+		var id int
+		var uri string
+		err = row.Scan(&id, &uri)
+		if err == nil {
 			d = &Destination{id, uri}
 		}
 	}
@@ -67,16 +53,15 @@ func ReadURI(db *sql.DB, uri string) (*Destination, error) {
 
 func Read(db *sql.DB, id int) (*Destination, error) {
 	var d *Destination
-	tx, err := db.Begin()
-	if err == nil {
-		row := tx.QueryRow("SELECT * FROM destinations WHERE id=?", id)
-		if row != nil {
-			tx.Rollback()
-		} else {
-			tx.Commit()
-			var id int
-			var uri string
-			row.Scan(&id, &uri)
+	var err error
+	row := db.QueryRow("SELECT * FROM destinations WHERE id=?", id)
+	if row == nil {
+		err = errors.New("Destination not found")
+	} else {
+		var id int
+		var uri string
+		err = row.Scan(&id, &uri)
+		if err == nil {
 			d = &Destination{id, uri}
 		}
 	}
@@ -111,14 +96,6 @@ func ReadAll(d *sql.DB) ([]*Destination, error) {
 }
 
 func Update(db *sql.DB, d *Destination) error {
-	tx, err := db.Begin()
-	if err == nil {
-		_, err = tx.Query("UPDATE destinations SET uri=? WHERE id=?", d.URI, d.ID)
-		if err != nil {
-			tx.Rollback()
-		} else {
-			tx.Commit()
-		}
-	}
+	_, err := db.Query("UPDATE destinations SET uri=? WHERE id=?", d.URI, d.ID)
 	return err
 }

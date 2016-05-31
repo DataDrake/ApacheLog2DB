@@ -7,6 +7,7 @@ import (
 	"ApacheLog2DB/user"
 	"database/sql"
 	"time"
+	"errors"
 )
 
 type Transaction struct {
@@ -25,75 +26,58 @@ type Transaction struct {
 }
 
 func CreateTable(d *sql.DB) error {
-	tx, err := d.Begin()
-	if err == nil {
-		_, err = tx.Exec("CREATE TABLE transactions" +
-			"( id INTEGER PRIMARY KEY AUTOINCREMENT," +
-			"ident TEXT, " +
-			"verb TEXT, " +
-			"protocol TEST, " +
-			"status INTEGER, " +
-			"size INTEGER, " +
-			"referrer TEXT, " +
-			"occured DATETIME, " +
-			"sourceid INTEGER, " +
-			"destid INTEGER, " +
-			"agentid INTEGER, " +
-			"userid INTEGER, " +
-			"FOREIGN KEY(sourceid) REFERENCES sources(id), " +
-			"FOREIGN KEY(destid) REFERENCES destinations(id), " +
-			"FOREIGN KEY(agentid) REFERENCES user_agents(id), " +
-			"FOREIGN KEY(userid) REFERENCES users(id)" +
-			" )")
-		if err != nil {
-			tx.Rollback()
-		} else {
-			tx.Commit()
-		}
-	}
+	_, err := d.Exec("CREATE TABLE txns" +
+		"( id INTEGER PRIMARY KEY AUTOINCREMENT," +
+		"ident TEXT, " +
+		"verb TEXT, " +
+		"protocol TEST, " +
+		"status INTEGER, " +
+		"size INTEGER, " +
+		"referrer TEXT, " +
+		"occured DATETIME, " +
+		"sourceid INTEGER, " +
+		"destid INTEGER, " +
+		"agentid INTEGER, " +
+		"userid INTEGER, " +
+		"FOREIGN KEY(sourceid) REFERENCES sources(id), " +
+		"FOREIGN KEY(destid) REFERENCES destinations(id), " +
+		"FOREIGN KEY(agentid) REFERENCES user_agents(id), " +
+		"FOREIGN KEY(userid) REFERENCES users(id)" +
+		" )")
 	return err
 }
 
 func Insert(d *sql.DB, t *Transaction) error {
-	tx, err := d.Begin()
-	if err == nil {
-		_, err = tx.Exec("INSERT INTO transactions VALUES( NULL,?,?,?,?,?,?,?,?,?,?,? )",
-			t.Ident, t.Verb, t.Protocol, t.Status, t.Size, t.Referrer,
-			t.Source.ID,
-			t.Dest.ID,
-			t.Agent.ID,
-			t.User.ID)
-		if err != nil {
-			tx.Rollback()
-		} else {
-			tx.Commit()
-		}
-	}
+	_, err := d.Exec("INSERT INTO txns VALUES( NULL,?,?,?,?,?,?,?,?,?,?,? )",
+		t.Ident, t.Verb, t.Protocol, t.Status, t.Size, t.Referrer,t.Occurred,
+		t.Source.ID,
+		t.Dest.ID,
+		t.Agent.ID,
+		t.User.ID)
 	return err
 }
 
 func Read(d *sql.DB, id int) (*Transaction, error) {
 	var t *Transaction
-	tx, err := d.Begin()
-	if err == nil {
-		row := tx.QueryRow("SELECT * FROM transaction WHERE id=?", id)
-		if row != nil {
-			tx.Rollback()
-		} else {
-			tx.Commit()
-			var id int
-			var ident string
-			var verb string
-			var protocol string
-			var status int
-			var size int
-			var referrer string
-			var occurred time.Time
-			var sourceid int
-			var destid int
-			var agentid int
-			var userid int
-			row.Scan(&id, &ident, &verb, &protocol, &status, &size, &referrer, &occurred, &sourceid, &destid, &agentid, &userid)
+	var err error
+	row := d.QueryRow("SELECT * FROM txns WHERE id=?", id)
+	if row != nil {
+		err = errors.New("Transaction not found")
+	} else {
+		var id int
+		var ident string
+		var verb string
+		var protocol string
+		var status int
+		var size int
+		var referrer string
+		var occurred time.Time
+		var sourceid int
+		var destid int
+		var agentid int
+		var userid int
+		err = row.Scan(&id, &ident, &verb, &protocol, &status, &size, &referrer, &occurred, &sourceid, &destid, &agentid, &userid)
+		if err == nil {
 			source, err := source.Read(d, sourceid)
 			if err != nil {
 				return nil, err
@@ -120,7 +104,7 @@ func ReadAll(db *sql.DB) ([]*Transaction, error) {
 	t := make([]*Transaction, 0)
 	tx, err := db.Begin()
 	if err == nil {
-		rows, err := tx.Query("SELECT * FROM transactions")
+		rows, err := tx.Query("SELECT * FROM txns")
 		if err != nil {
 			tx.Rollback()
 		} else {
@@ -187,15 +171,7 @@ func ReadAll(db *sql.DB) ([]*Transaction, error) {
 }
 
 func Update(d *sql.DB, u *Transaction) error {
-	tx, err := d.Begin()
-	if err == nil {
-		_, err = tx.Query("UPDATE transactions SET ident=?,verb=?,protocol=?,status=?,size=?,referrer=?,occurred=?,sourceid=?,destid=?,agentid=?,userid=? WHERE id=?",
-			u.Ident, u.Verb, u.Protocol, u.Status, u.Size, u.Referrer, u.Occurred, u.Source.ID, u.Dest.ID, u.Agent.ID, u.User.ID)
-		if err != nil {
-			tx.Rollback()
-		} else {
-			tx.Commit()
-		}
-	}
+	_, err := d.Query("UPDATE txns SET ident=?,verb=?,protocol=?,status=?,size=?,referrer=?,occurred=?,sourceid=?,destid=?,agentid=?,userid=? WHERE id=?",
+		u.Ident, u.Verb, u.Protocol, u.Status, u.Size, u.Referrer, u.Occurred, u.Source.ID, u.Dest.ID, u.Agent.ID, u.User.ID)
 	return err
 }

@@ -1,6 +1,9 @@
 package source
 
-import "database/sql"
+import (
+	"database/sql"
+	"errors"
+)
 
 type Source struct {
 	ID int
@@ -15,49 +18,34 @@ func ReadOrCreate(db *sql.DB, IP string) (*Source, error) {
 	src, err := ReadIP(db, IP)
 	if err != nil {
 		err = Insert(db, NewSource(IP))
-		src, err = ReadIP(db, IP)
+		if err == nil {
+			src, err = ReadIP(db, IP)
+		}
 	}
 	return src, err
 }
 
 func CreateTable(d *sql.DB) error {
-	tx, err := d.Begin()
-	if err == nil {
-		_, err = tx.Exec("CREATE TABLE sources ( id INTEGER PRIMARY KEY AUTOINCREMENT, ip TEXT )")
-		if err != nil {
-			tx.Rollback()
-		} else {
-			tx.Commit()
-		}
-	}
+	_, err := d.Exec("CREATE TABLE sources ( id INTEGER PRIMARY KEY AUTOINCREMENT, ip TEXT )")
 	return err
 }
 
 func Insert(d *sql.DB, s *Source) error {
-	tx, err := d.Begin()
-	if err == nil {
-		_, err = tx.Exec("INSERT INTO sources VALUES( NULL , ? )", s.IP)
-		if err != nil {
-			tx.Rollback()
-		} else {
-			tx.Commit()
-		}
-	}
+	_, err := d.Exec("INSERT INTO sources VALUES( NULL , ? )", s.IP)
 	return err
 }
 
 func ReadIP(d *sql.DB, ip string) (*Source, error) {
 	var s *Source
-	tx, err := d.Begin()
-	if err == nil {
-		row := tx.QueryRow("SELECT * FROM sources WHERE ip=?", ip)
-		if row != nil {
-			tx.Rollback()
-		} else {
-			tx.Commit()
-			var id int
-			var ip string
-			row.Scan(&id, &ip)
+	var err error
+	row := d.QueryRow("SELECT * FROM sources WHERE ip=?", ip)
+	if row == nil {
+		err = errors.New("Source not found")
+	} else {
+		var id int
+		var ip string
+		err = row.Scan(&id, &ip)
+		if err == nil {
 			s = &Source{id, ip}
 		}
 	}
@@ -66,16 +54,15 @@ func ReadIP(d *sql.DB, ip string) (*Source, error) {
 
 func Read(d *sql.DB, id int) (*Source, error) {
 	var s *Source
-	tx, err := d.Begin()
-	if err == nil {
-		row := tx.QueryRow("SELECT * FROM sources WHERE id=?", id)
-		if row != nil {
-			tx.Rollback()
-		} else {
-			tx.Commit()
-			var id int
-			var ip string
-			row.Scan(&id, &ip)
+	var err error
+	row := d.QueryRow("SELECT * FROM sources WHERE id=?", id)
+	if row == nil {
+		err = errors.New("Source not found")
+	} else {
+		var id int
+		var ip string
+		err = row.Scan(&id, &ip)
+		if err == nil {
 			s = &Source{id, ip}
 		}
 	}
@@ -110,14 +97,6 @@ func ReadAll(d *sql.DB) ([]*Source, error) {
 }
 
 func Update(d *sql.DB, s *Source) error {
-	tx, err := d.Begin()
-	if err == nil {
-		_, err = tx.Query("UPDATE sources SET ip=? WHERE id=?", s.IP, s.ID)
-		if err != nil {
-			tx.Rollback()
-		} else {
-			tx.Commit()
-		}
-	}
+	_, err := d.Query("UPDATE sources SET ip=? WHERE id=?", s.IP, s.ID)
 	return err
 }

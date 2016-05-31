@@ -16,8 +16,13 @@ import (
 	"time"
 )
 
-func ImportLog(log *io.Reader, db *sql.DB) {
-	scan := bufio.NewScanner(*log)
+func ImportLog(log io.Reader, db *sql.DB) {
+	err := CreateAllTables(db)
+	if err != nil {
+		fmt.Fprintf(os.Stderr,err.Error())
+		os.Exit(1)
+	}
+	scan := bufio.NewScanner(log)
 	for scan.Scan() {
 		line := APACHE_COMBINED.FindStringSubmatch(scan.Text())
 		if line != nil {
@@ -25,7 +30,7 @@ func ImportLog(log *io.Reader, db *sql.DB) {
 			//Get Source
 			src, err := source.ReadOrCreate(db, line[1])
 			if err != nil {
-				fmt.Fprintf(os.Stderr, "Warning: %s\n", err.Error())
+				fmt.Fprintf(os.Stderr, "[Source] Warning: %s\n", err.Error())
 				continue
 			}
 
@@ -35,14 +40,14 @@ func ImportLog(log *io.Reader, db *sql.DB) {
 			//Get User
 			u, err := user.ReadOrCreate(db, line[3])
 			if err != nil {
-				fmt.Fprintf(os.Stderr, "Warning: %s\n", err.Error())
+				fmt.Fprintf(os.Stderr, "[User] Warning: %s\n", err.Error())
 				continue
 			}
 
 			//Get Time Occurred
 			occurred, err := time.Parse(APACHE_TIME_LAYOUT, line[4])
 			if err != nil {
-				fmt.Fprintf(os.Stderr, "Warning: %s\n", err.Error())
+				fmt.Fprintf(os.Stderr, "[Occured] Warning: %s\n", err.Error())
 				continue
 			}
 
@@ -66,21 +71,21 @@ func ImportLog(log *io.Reader, db *sql.DB) {
 
 			dest, err := destination.ReadOrCreate(db, uri)
 			if err != nil {
-				fmt.Fprintf(os.Stderr, "Warning: %s\n", err.Error())
+				fmt.Fprintf(os.Stderr, "[Destination] Warning: %s\n", err.Error())
 				continue
 			}
 
 			//Convert status code to integer
 			status, err := strconv.Atoi(line[6])
 			if err != nil {
-				fmt.Fprintf(os.Stderr, "Warning: %s\n", err.Error())
+				fmt.Fprintf(os.Stderr, "[Status] Warning: %s\n", err.Error())
 				continue
 			}
 
 			//Convert size to integer
 			size, err := strconv.Atoi(line[7])
 			if err != nil {
-				fmt.Fprintf(os.Stderr, "Warning: %s\n", err.Error())
+				fmt.Fprintf(os.Stderr, "[Size] Warning: %s\n", err.Error())
 				continue
 			}
 
@@ -89,7 +94,7 @@ func ImportLog(log *io.Reader, db *sql.DB) {
 
 			a, err := agent.ReadOrCreate(db, line[9])
 			if err != nil {
-				fmt.Fprintf(os.Stderr, "Warning: %s\n", err.Error())
+				fmt.Fprintf(os.Stderr, "[Agent] Warning: %s\n", err.Error())
 				continue
 			}
 
@@ -97,7 +102,7 @@ func ImportLog(log *io.Reader, db *sql.DB) {
 
 			err = transaction.Insert(db, trans)
 			if err != nil {
-				fmt.Fprintf(os.Stderr, "Warning: %s\n", err.Error())
+				fmt.Fprintf(os.Stderr, "[TXN] Warning: %s\n", err.Error())
 				continue
 			}
 		}
