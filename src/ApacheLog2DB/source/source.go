@@ -33,11 +33,11 @@ func Insert(d *sql.DB, s *Source) error {
 	return err
 }
 
-func Read(d *sql.DB, id int) (*Source, error) {
+func Read(d *sql.DB, ip string) (*Source, error) {
 	var s *Source
 	tx, err := d.Begin()
 	if err == nil {
-		row := tx.QueryRow("SELECT * FROM sources WHERE id=?", id)
+		row := tx.QueryRow("SELECT * FROM sources WHERE ip=?", ip)
 		if row != nil {
 			tx.Rollback()
 		} else {

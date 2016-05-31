@@ -33,11 +33,11 @@ func Insert(db *sql.DB, d *Destination) error {
 	return err
 }
 
-func Read(db *sql.DB, id int) (*Destination, error) {
+func Read(db *sql.DB, uri string) (*Destination, error) {
 	var d *Destination
 	tx, err := db.Begin()
 	if err == nil {
-		row := tx.QueryRow("SELECT * FROM destinations WHERE id=?", id)
+		row := tx.QueryRow("SELECT * FROM destinations WHERE uri=?", uri)
 		if row != nil {
 			tx.Rollback()
 		} else {
