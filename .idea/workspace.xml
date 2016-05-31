@@ -3,7 +3,9 @@
   <component name="ChangeListManager">
     <list default="true" id="7a917e3d-edf1-4595-925b-e9a597ce820d" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/github.com/mattn/go-sqlite3" afterPath="$PROJECT_DIR$/src/github.com/mattn/go-sqlite3" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/ApacheLog2DB/core/exporter.go" afterPath="$PROJECT_DIR$/src/ApacheLog2DB/core/exporter.go" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/ApacheLog2DB/core/importer.go" afterPath="$PROJECT_DIR$/src/ApacheLog2DB/core/importer.go" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/ApacheLog2DB/log2db.go" afterPath="$PROJECT_DIR$/src/ApacheLog2DB/log2db.go" />
     </list>
     <ignored path="ApacheLog2DB.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -47,13 +49,13 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="log2db.go" pinned="false" current-in-tab="false">
+      <file leaf-file-name="log2db.go" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/ApacheLog2DB/log2db.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="1" column="0" selection-start-line="1" selection-start-column="0" selection-end-line="1" selection-end-column="0" />
+            <state vertical-scroll-proportion="0.38297874">
+              <caret line="18" column="24" selection-start-line="18" selection-start-column="24" selection-end-line="18" selection-end-column="24" />
               <folding>
-                <element signature="e#14#57#0" expanded="true" />
+                <element signature="e#14#121#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -69,12 +71,14 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="importer.go" pinned="false" current-in-tab="true">
+      <file leaf-file-name="importer.go" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/ApacheLog2DB/core/importer.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.18815331">
-              <caret line="6" column="8" selection-start-line="6" selection-start-column="8" selection-end-line="6" selection-end-column="8" />
-              <folding />
+            <state vertical-scroll-proportion="0.0">
+              <caret line="14" column="43" selection-start-line="14" selection-start-column="43" selection-end-line="14" selection-end-column="43" />
+              <folding>
+                <element signature="e#14#85#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -95,9 +99,9 @@
         <entry file="file://$PROJECT_DIR$/src/ApacheLog2DB/core/exporter.go">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="4" column="30" selection-start-line="4" selection-start-column="30" selection-end-line="4" selection-end-column="30" />
+              <caret line="8" column="0" selection-start-line="8" selection-start-column="0" selection-end-line="8" selection-end-column="0" />
               <folding>
-                <element signature="e#14#25#0" expanded="true" />
+                <element signature="e#14#46#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -108,7 +112,9 @@
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
               <caret line="82" column="15" selection-start-line="82" selection-start-column="15" selection-end-line="82" selection-end-column="15" />
-              <folding />
+              <folding>
+                <element signature="e#14#179#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -155,11 +161,11 @@
         <option value="$PROJECT_DIR$/src/ApacheLog2DB/util.go" />
         <option value="$PROJECT_DIR$/src/ApacheLog2DB/core/util.go" />
         <option value="$PROJECT_DIR$/src/ApacheLog2DB/core/tables.go" />
-        <option value="$PROJECT_DIR$/src/ApacheLog2DB/log2db.go" />
         <option value="$PROJECT_DIR$/src/ApacheLog2DB/log2db_test.go" />
         <option value="$PROJECT_DIR$/src/ApacheLog2DB/core/tables_test.go" />
-        <option value="$PROJECT_DIR$/src/ApacheLog2DB/core/exporter.go" />
         <option value="$PROJECT_DIR$/src/ApacheLog2DB/core/importer.go" />
+        <option value="$PROJECT_DIR$/src/ApacheLog2DB/core/exporter.go" />
+        <option value="$PROJECT_DIR$/src/ApacheLog2DB/log2db.go" />
       </list>
     </option>
   </component>
@@ -550,12 +556,12 @@
     <frame x="0" y="25" width="1358" height="718" extended-state="4" />
     <editor active="true" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.2531835" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2531835" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3294509" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3294509" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -659,7 +665,7 @@
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="e#14#57#0" expanded="true" />
+            <element signature="e#14#121#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -768,6 +774,16 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/ApacheLog2DB/core/exporter.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="8" column="0" selection-start-line="8" selection-start-column="0" selection-end-line="8" selection-end-column="0" />
+          <folding>
+            <element signature="e#14#46#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/ApacheLog2DB/core/tables.go">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -778,39 +794,33 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/ApacheLog2DB/log2db.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="1" column="0" selection-start-line="1" selection-start-column="0" selection-end-line="1" selection-end-column="0" />
-          <folding>
-            <element signature="e#14#57#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/ApacheLog2DB/core/tables_test.go">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="82" column="15" selection-start-line="82" selection-start-column="15" selection-end-line="82" selection-end-column="15" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/ApacheLog2DB/core/exporter.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="4" column="30" selection-start-line="4" selection-start-column="30" selection-end-line="4" selection-end-column="30" />
           <folding>
-            <element signature="e#14#25#0" expanded="true" />
+            <element signature="e#14#179#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/ApacheLog2DB/core/importer.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.18815331">
-          <caret line="6" column="8" selection-start-line="6" selection-start-column="8" selection-end-line="6" selection-end-column="8" />
-          <folding />
+        <state vertical-scroll-proportion="0.0">
+          <caret line="14" column="43" selection-start-line="14" selection-start-column="43" selection-end-line="14" selection-end-column="43" />
+          <folding>
+            <element signature="e#14#85#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/ApacheLog2DB/log2db.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.38297874">
+          <caret line="18" column="24" selection-start-line="18" selection-start-column="24" selection-end-line="18" selection-end-column="24" />
+          <folding>
+            <element signature="e#14#121#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

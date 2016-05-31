@@ -1,14 +1,15 @@
 package core
 
 import (
+	"bufio"
+	"database/sql"
+	"io"
 	"strconv"
 	"strings"
 	"time"
-	"io"
-	"bufio"
 )
 
-func ImportLog(log *io.Reader) error {
+func ImportLog(log *io.Reader, db *sql.DB) error {
 	scan := bufio.NewScanner(log)
 	for scan.Scan() {
 		_, line := APACHE_COMBINED.FindAllStringSubmatch(scan.Text(), -1)

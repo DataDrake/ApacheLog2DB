@@ -1,7 +1,10 @@
 package core
 
-import "io"
+import (
+	"database/sql"
+	"io"
+)
 
-func ExportLog(w *io.Writer) {
+func ExportLog(db *sql.DB, w *io.Writer) {
 
 }
