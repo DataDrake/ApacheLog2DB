@@ -1,13 +1,14 @@
 package core
+
 import (
-	"testing"
-	"os"
-	"database/sql"
-	"ApacheLog2DB/user"
 	"ApacheLog2DB/agent"
 	"ApacheLog2DB/destination"
 	"ApacheLog2DB/source"
 	"ApacheLog2DB/transaction"
+	"ApacheLog2DB/user"
+	"database/sql"
+	"os"
+	"testing"
 )
 
 func TestCheckTables(t *testing.T) {
@@ -121,4 +122,3 @@ func TestCreateAllTables(t *testing.T) {
 		t.Error("Should have found no tables missing.")
 	}
 }
-

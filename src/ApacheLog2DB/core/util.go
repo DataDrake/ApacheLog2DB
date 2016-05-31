@@ -1,4 +1,5 @@
 package core
+
 import "regexp"
 
 var APACHE_COMBINED = regexp.MustCompile("^(\\S*).(\\S*).(\\S*).\\[(.*)\\].\"([^\"]*)\".(\\d{3}).(\\d*).\"([^\"]*)\".\"([^\"]*)\"$")

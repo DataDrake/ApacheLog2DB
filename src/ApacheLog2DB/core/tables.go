@@ -1,11 +1,12 @@
 package core
+
 import (
-	"database/sql"
 	"ApacheLog2DB/agent"
-	"ApacheLog2DB/source"
 	"ApacheLog2DB/destination"
-	"ApacheLog2DB/user"
+	"ApacheLog2DB/source"
 	"ApacheLog2DB/transaction"
+	"ApacheLog2DB/user"
+	"database/sql"
 	"errors"
 )
 
