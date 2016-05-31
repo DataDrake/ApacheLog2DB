@@ -7,6 +7,20 @@ type UserAgent struct {
 	Name string
 }
 
+func NewAgent(name string) *UserAgent {
+	return &UserAgent{-1, name}
+}
+
+func ReadOrCreate(db *sql.DB, name string) (*UserAgent, error) {
+	agent, err := ReadName(db, name)
+	if err != nil {
+		agent = NewAgent(name)
+		err = Insert(db, agent)
+		agent, err = ReadName(db, name)
+	}
+	return agent, err
+}
+
 func CreateTable(d *sql.DB) error {
 	tx, err := d.Begin()
 	if err == nil {

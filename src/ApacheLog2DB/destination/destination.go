@@ -7,6 +7,20 @@ type Destination struct {
 	URI string
 }
 
+func NewDestination(uri string) *Destination {
+	return &Destination{-1, uri}
+}
+
+func ReadOrCreate(db *sql.DB, uri string) (*Destination, error) {
+	dest, err := ReadURI(db, uri)
+	if err != nil {
+		dest = NewDestination(uri)
+		err = Insert(db, dest)
+		dest, err = ReadURI(db, uri)
+	}
+	return dest, err
+}
+
 func CreateTable(d *sql.DB) error {
 	tx, err := d.Begin()
 	if err == nil {

@@ -7,6 +7,20 @@ type Source struct {
 	IP string
 }
 
+func NewSource(ip string) *Source {
+	return &Source{-1, ip}
+}
+
+func ReadOrCreate(db *sql.DB, ip string) (*Source, error) {
+	src, err := ReadIP(db, ip)
+	if err != nil {
+		src = NewSource(ip)
+		err = Insert(db, src)
+		src, err = ReadIP(db, ip)
+	}
+	return src, err
+}
+
 func CreateTable(d *sql.DB) error {
 	tx, err := d.Begin()
 	if err == nil {

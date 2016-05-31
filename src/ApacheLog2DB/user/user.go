@@ -7,6 +7,20 @@ type User struct {
 	Name string
 }
 
+func NewUser(name string) *User {
+	return &User{-1, name}
+}
+
+func ReadOrCreate(db *sql.DB, name string) (*User, error) {
+	src, err := ReadName(db, name)
+	if err != nil {
+		src = NewUser(name)
+		err = Insert(db, src)
+		src, err = ReadName(db, name)
+	}
+	return src, err
+}
+
 func CreateTable(d *sql.DB) error {
 	tx, err := d.Begin()
 	if err == nil {
@@ -55,7 +69,7 @@ func Read(d *sql.DB, id int) (*User, error) {
 	var u *User
 	tx, err := d.Begin()
 	if err == nil {
-		row := tx.QueryRow("SELECT * FROM users WHERE id=?", int)
+		row := tx.QueryRow("SELECT * FROM users WHERE id=?", id)
 		if row != nil {
 			tx.Rollback()
 		} else {

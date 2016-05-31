@@ -3,12 +3,12 @@ package core
 import (
 	"bufio"
 	"database/sql"
+	"fmt"
 	"io"
+	"os"
 	"strconv"
 	"strings"
 	"time"
-	"fmt"
-	"os"
 )
 
 func ImportLog(log *io.Reader, db *sql.DB) error {
@@ -21,7 +21,7 @@ func ImportLog(log *io.Reader, db *sql.DB) error {
 			username := line[3]
 			occurred, err := time.Parse(APACHE_TIME_LAYOUT, line[4])
 			if err != nil {
-				fmt.Fprintf(os.Stderr,"Warning: %s\n",err.Error())
+				fmt.Fprintf(os.Stderr, "Warning: %s\n", err.Error())
 				continue
 			}
 			request := strings.Split(line[5], " ")
@@ -43,13 +43,13 @@ func ImportLog(log *io.Reader, db *sql.DB) error {
 
 			status, err := strconv.Atoi(line[6])
 			if err != nil {
-				fmt.Fprintf(os.Stderr,"Warning: %s\n",err.Error())
+				fmt.Fprintf(os.Stderr, "Warning: %s\n", err.Error())
 				continue
 			}
 
 			size, err := strconv.Atoi(line[7])
 			if err != nil {
-				fmt.Fprintf(os.Stderr,"Warning: %s\n",err.Error())
+				fmt.Fprintf(os.Stderr, "Warning: %s\n", err.Error())
 				continue
 			}
 
