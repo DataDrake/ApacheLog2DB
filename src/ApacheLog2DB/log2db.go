@@ -55,7 +55,7 @@ func main() {
 			fmt.Fprintf(os.Stderr, "Output file must be a db string")
 			os.Exit(1)
 		}
-		db, err = sql.Open("sqlite3", args[1])
+		db, err = sql.Open("sqlite3", args[1],)
 		defer db.Close()
 	} else {
 		if !(args[1] == "-" || args[1] == "--") {
