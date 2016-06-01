@@ -6,6 +6,7 @@ import (
 	"flag"
 	"fmt"
 	_ "github.com/mattn/go-sqlite3"
+	"github.com/davecheney/profile"
 	"os"
 )
 
@@ -68,7 +69,7 @@ func main() {
 		fmt.Fprintf(os.Stderr, err.Error())
 		os.Exit(1)
 	}
-
+	defer profile.Start(profile.CPUProfile).Stop()
 	if *export {
 		core.ExportLog(db, writer)
 	} else {

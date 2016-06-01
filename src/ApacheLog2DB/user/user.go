@@ -37,67 +37,46 @@ func Insert(d *sql.DB, u *User) error {
 }
 
 func ReadName(d *sql.DB, name string) (*User, error) {
-	var u *User
+	u := &User{}
 	var err error
 	row := d.QueryRow("SELECT * FROM users WHERE name=?", name)
 	if row == nil {
 		err = errors.New("User not found")
 	} else {
-		var id int
-		var name string
-		err = row.Scan(&id, &name)
-		if err == nil {
-			u = &User{id, name}
-		}
+		err = row.Scan(&u.ID, &u.Name)
 	}
 	return u, err
 }
 
 func Read(d *sql.DB, id int) (*User, error) {
-	var u *User
+	u := &User{}
 	var err error
 	row := d.QueryRow("SELECT * FROM users WHERE id=?", id)
 	if row == nil {
 		err = errors.New("User not found")
 	} else {
-		var id int
-		var name string
-		err = row.Scan(&id, &name)
-		if err == nil {
-			u = &User{id, name}
-		}
+		err = row.Scan(&u.ID, &u.Name)
 	}
 	return u, err
 }
 
 func ReadAll(d *sql.DB) ([]*User, error) {
-	s := make([]*User, 0)
-	tx, err := d.Begin()
+	us := make([]*User, 0)
+	rows, err := d.Query("SELECT * FROM users")
 	if err == nil {
-		rows, err := tx.Query("SELECT * FROM users")
-		if err != nil {
-			tx.Rollback()
-		} else {
-			var id int
-			var ip string
-			rows.Scan(&id, &ip)
-			if id >= 0 && len(ip) > 0 {
-				s = append(s, &User{id, ip})
+		for rows.Next() {
+			u := &User{}
+			rows.Scan(&u.ID, &u.Name)
+			if u.ID >= 0 && len(u.Name) > 0 {
+				us = append(us, u)
 			}
-			for rows.Next() {
-				rows.Scan(&id, &ip)
-				if id >= 0 && len(ip) > 0 {
-					s = append(s, &User{id, ip})
-				}
-			}
-			rows.Close()
-			tx.Commit()
 		}
+		rows.Close()
 	}
-	return s, err
+	return us, err
 }
 
 func Update(d *sql.DB, u *User) error {
-	_, err := d.Query("UPDATE users SET name=? WHERE id=?", u.Name, u.ID)
+	_, err := d.Exec("UPDATE users SET name=? WHERE id=?", u.Name, u.ID)
 	return err
 }

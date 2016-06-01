@@ -30,7 +30,7 @@ func CreateTable(d *sql.DB) error {
 		"( id INTEGER PRIMARY KEY AUTOINCREMENT," +
 		"ident TEXT, " +
 		"verb TEXT, " +
-		"protocol TEST, " +
+		"protocol TEXT, " +
 		"status INTEGER, " +
 		"size INTEGER, " +
 		"referrer TEXT, " +
@@ -58,95 +58,83 @@ func Insert(d *sql.DB, t *Transaction) error {
 }
 
 func Read(d *sql.DB, id int) (*Transaction, error) {
-	var t *Transaction
+	t := &Transaction{}
 	var err error
 	row := d.QueryRow("SELECT * FROM txns WHERE id=?", id)
 	if row != nil {
 		err = errors.New("Transaction not found")
 	} else {
-		var id int
-		var ident string
-		var verb string
-		var protocol string
-		var status int
-		var size int
-		var referrer string
-		var occurred time.Time
 		var sourceid int
 		var destid int
 		var agentid int
 		var userid int
-		err = row.Scan(&id, &ident, &verb, &protocol, &status, &size, &referrer, &occurred, &sourceid, &destid, &agentid, &userid)
+		err = row.Scan(&t.ID, &t.Ident, &t.Verb, &t.Protocol, &t.Status, &t.Size, &t.Referrer, &t.Occurred, &sourceid, &destid, &agentid, &userid)
 		if err == nil {
-			source, err := source.Read(d, sourceid)
+			t.Source, err = source.Read(d, sourceid)
 			if err != nil {
 				return nil, err
 			}
-			dest, err := destination.Read(d, destid)
+
+			t.Dest, err = destination.Read(d, destid)
 			if err != nil {
 				return nil, err
 			}
-			agent, err := agent.Read(d, agentid)
+
+			t.Agent, err = agent.Read(d, agentid)
 			if err != nil {
 				return nil, err
 			}
-			user, err := user.Read(d, userid)
+
+			t.User, err = user.Read(d, userid)
 			if err != nil {
 				return nil, err
 			}
-			t = &Transaction{id, ident, verb, protocol, status, size, referrer, occurred, source, dest, agent, user}
 		}
 	}
 	return t, err
 }
 
 func ReadAll(db *sql.DB) ([]*Transaction, error) {
-	t := make([]*Transaction, 0)
+	ts := make([]*Transaction, 0)
 	rows, err := db.Query("SELECT * FROM txns")
 	if err == nil {
-		var id int
-		var ident string
-		var verb string
-		var protocol string
-		var status int
-		var size int
-		var referrer string
-		var occurred time.Time
-		var sourceid int
-		var destid int
-		var agentid int
-		var userid int
-
 		for rows.Next() {
-			rows.Scan(&id, &ident, &verb, &protocol, &status, &size, &referrer, &occurred, &sourceid, &destid, &agentid, &userid)
-			s, err := source.Read(db, sourceid)
-			if err != nil {
-				return nil, err
-			}
-			d, err := destination.Read(db, destid)
-			if err != nil {
-				return nil, err
-			}
-			a, err := agent.Read(db, agentid)
-			if err != nil {
-				return nil, err
-			}
-			u, err := user.Read(db, userid)
+			var sourceid int
+			var destid int
+			var agentid int
+			var userid int
+			t := &Transaction{}
+			rows.Scan(&t.ID, &t.Ident, &t.Verb, &t.Protocol, &t.Status, &t.Size, &t.Referrer, &t.Occurred, &sourceid, &destid, &agentid, &userid)
+
+			t.Source, err = source.Read(db, sourceid)
 			if err != nil {
 				return nil, err
 			}
 
-			if id >= 0 {
-				t = append(t, &Transaction{id, ident, verb, protocol, status, size, referrer, occurred, s, d, a, u})
+			t.Dest, err = destination.Read(db, destid)
+			if err != nil {
+				return nil, err
 			}
+
+			t.Agent, err = agent.Read(db, agentid)
+			if err != nil {
+				return nil, err
+			}
+
+			t.User, err = user.Read(db, userid)
+			if err != nil {
+				return nil, err
+			}
+
+			ts = append(ts, t)
 		}
 		rows.Close()
 	}
-	return t, err
+	return ts, err
 }
 
-func Update(d *sql.DB, u *Transaction) error {
-	_, err := d.Query("UPDATE txns SET ident=?,verb=?,protocol=?,status=?,size=?,referrer=?,occurred=?,sourceid=?,destid=?,agentid=?,userid=? WHERE id=?",
-		u.Ident, u.Verb, u.Protocol, u.Status, u.Size, u.Referrer, u.Occurred, u.Source.ID, u.Dest.ID, u.Agent.ID, u.User.ID)
+func Update(d *sql.DB, t *Transaction) error {
+	_, err := d.Exec("UPDATE txns SET ident=?,verb=?,protocol=?,status=?,size=?,referrer=?,occurred=?,sourceid=?,destid=?,agentid=?,userid=? WHERE id=?",
+		t.Ident, t.Verb, t.Protocol, t.Status, t.Size, t.Referrer, t.Occurred, t.Source.ID, t.Dest.ID, t.Agent.ID, t.User.ID)
 	return err
 }

@@ -76,6 +76,6 @@ func ReadAll(d *sql.DB) ([]*UserAgent, error) {
 }
 
 func Update(d *sql.DB, u *UserAgent) error {
-	_, err := d.Query("UPDATE user_agents SET name=? WHERE id=?", u.Name, u.ID)
+	_, err := d.Exec("UPDATE user_agents SET name=? WHERE id=?", u.Name, u.ID)
 	return err
 }

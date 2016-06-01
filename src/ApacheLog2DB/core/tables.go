@@ -10,9 +10,9 @@ import (
 	"errors"
 )
 
-func get_tables(tx *sql.Tx) ([]string, error) {
+func get_tables(db *sql.DB) ([]string, error) {
 	tables := make([]string, 0)
-	found, err := tx.Query("SELECT name FROM sqlite_master WHERE type='table'")
+	found, err := db.Query("SELECT name FROM sqlite_master WHERE type='table'")
 	if err != nil {
 		return nil, err
 	}
@@ -69,14 +69,10 @@ func CreateAllTables(db *sql.DB) error {
 }
 
 func CheckTables(db *sql.DB) (error, []string) {
-
-	tx, err := db.Begin()
+	tables, err := get_tables(db)
 	if err != nil {
-		return err, nil
+		return nil,err
 	}
-	tables, err := get_tables(tx)
-	tx.Commit()
-
 	missing := make([]string, 0)
 	for _, t := range LOG2DB_TABLES {
 		if !SliceContains(tables, t) {

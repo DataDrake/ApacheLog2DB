@@ -61,7 +61,7 @@ func Read(db *sql.DB, id int) (*Destination, error) {
 func ReadAll(d *sql.DB) ([]*Destination, error) {
 	ds := make([]*Destination, 0)
 	rows, err := d.Query("SELECT * FROM destinations")
-	if err != nil {
+	if err == nil {
 		for rows.Next() {
 			d := &Destination{}
 			rows.Scan(&d.ID, &d.URI)
@@ -75,6 +75,6 @@ func ReadAll(d *sql.DB) ([]*Destination, error) {
 }
 
 func Update(db *sql.DB, d *Destination) error {
-	_, err := db.Query("UPDATE destinations SET uri=? WHERE id=?", d.URI, d.ID)
+	_, err := db.Exec("UPDATE destinations SET uri=? WHERE id=?", d.URI, d.ID)
 	return err
 }

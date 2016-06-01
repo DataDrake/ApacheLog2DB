@@ -36,67 +36,46 @@ func Insert(d *sql.DB, s *Source) error {
 }
 
 func ReadIP(d *sql.DB, ip string) (*Source, error) {
-	var s *Source
+	s := &Source{}
 	var err error
 	row := d.QueryRow("SELECT * FROM sources WHERE ip=?", ip)
 	if row == nil {
 		err = errors.New("Source not found")
 	} else {
-		var id int
-		var ip string
-		err = row.Scan(&id, &ip)
-		if err == nil {
-			s = &Source{id, ip}
-		}
+		err = row.Scan(&s.ID, &s.IP)
 	}
 	return s, err
 }
 
 func Read(d *sql.DB, id int) (*Source, error) {
-	var s *Source
+	s := &Source{}
 	var err error
 	row := d.QueryRow("SELECT * FROM sources WHERE id=?", id)
 	if row == nil {
 		err = errors.New("Source not found")
 	} else {
-		var id int
-		var ip string
-		err = row.Scan(&id, &ip)
-		if err == nil {
-			s = &Source{id, ip}
-		}
+		err = row.Scan(&s.ID, &s.IP)
 	}
 	return s, err
 }
 
 func ReadAll(d *sql.DB) ([]*Source, error) {
-	s := make([]*Source, 0)
-	tx, err := d.Begin()
+	ss := make([]*Source, 0)
+	rows, err := d.Query("SELECT * FROM sources")
 	if err == nil {
-		rows, err := tx.Query("SELECT * FROM sources")
-		if err != nil {
-			tx.Rollback()
-		} else {
-			var id int
-			var ip string
-			rows.Scan(&id, &ip)
-			if id >= 0 && len(ip) > 0 {
-				s = append(s, &Source{id, ip})
+		for rows.Next() {
+			s := &Source{}
+			rows.Scan(&s.ID, &s.IP)
+			if s.ID >= 0 && len(s.IP) > 0 {
+				ss = append(ss, s)
 			}
-			for rows.Next() {
-				rows.Scan(&id, &ip)
-				if id >= 0 && len(ip) > 0 {
-					s = append(s, &Source{id, ip})
-				}
-			}
-			rows.Close()
-			tx.Commit()
 		}
+		rows.Close()
 	}
-	return s, err
+	return ss, err
 }
 
 func Update(d *sql.DB, s *Source) error {
-	_, err := d.Query("UPDATE sources SET ip=? WHERE id=?", s.IP, s.ID)
+	_, err := d.Exec("UPDATE sources SET ip=? WHERE id=?", s.IP, s.ID)
 	return err
 }
