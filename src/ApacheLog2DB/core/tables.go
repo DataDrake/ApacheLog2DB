@@ -32,7 +32,7 @@ func get_tables(db *sql.DB) ([]string, error) {
 }
 
 func CreateAllTables(db *sql.DB) error {
-	err, missing := CheckTables(db)
+	missing, err := CheckTables(db)
 
 	if SliceContains(missing, "user_agents") {
 		err = agent.CreateTable(db)
@@ -68,10 +68,10 @@ func CreateAllTables(db *sql.DB) error {
 	return err
 }
 
-func CheckTables(db *sql.DB) (error, []string) {
+func CheckTables(db *sql.DB) ([]string, error) {
 	tables, err := get_tables(db)
 	if err != nil {
-		return nil,err
+		return nil, err
 	}
 	missing := make([]string, 0)
 	for _, t := range LOG2DB_TABLES {
@@ -80,7 +80,7 @@ func CheckTables(db *sql.DB) (error, []string) {
 		}
 	}
 	if len(missing) != 0 {
-		return errors.New("Missing tables"), missing
+		return missing, errors.New("Missing tables")
 	}
-	return nil, missing
+	return missing, nil
 }

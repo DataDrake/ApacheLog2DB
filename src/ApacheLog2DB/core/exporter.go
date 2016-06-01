@@ -1,10 +1,10 @@
 package core
 
 import (
-	"database/sql"
-	"io"
 	"ApacheLog2DB/transaction"
+	"database/sql"
 	"fmt"
+	"io"
 	"os"
 )
 
@@ -16,12 +16,12 @@ func safe_string(s string) string {
 }
 
 func ExportLog(db *sql.DB, w io.Writer) {
-	txns,err := transaction.ReadAll(db)
+	txns, err := transaction.ReadAll(db)
 	if err != nil {
-		fmt.Fprintf(os.Stderr,err.Error())
+		fmt.Fprintf(os.Stderr, err.Error())
 		os.Exit(1)
 	}
-	for _,txn := range txns {
+	for _, txn := range txns {
 		request := ""
 		lV := len(txn.Verb)
 		lU := len(txn.Dest.URI)
@@ -30,13 +30,13 @@ func ExportLog(db *sql.DB, w io.Writer) {
 			request = txn.Verb
 
 		}
-		if len(request) > 0  && lU > 0{
+		if len(request) > 0 && lU > 0 {
 			request = request + " " + txn.Dest.URI
 		} else if lU > 0 {
 			request = txn.Dest.URI
 		}
 
-		if len(request) > 0  && lP > 0{
+		if len(request) > 0 && lP > 0 {
 			request = request + " " + txn.Protocol
 		} else if lP > 0 {
 			request = txn.Protocol

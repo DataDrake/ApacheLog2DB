@@ -5,8 +5,8 @@ import (
 	"database/sql"
 	"flag"
 	"fmt"
-	_ "github.com/mattn/go-sqlite3"
 	"github.com/davecheney/profile"
+	_ "github.com/mattn/go-sqlite3"
 	"os"
 )
 

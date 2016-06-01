@@ -42,7 +42,7 @@ func ReadName(d *sql.DB, name string) (*UserAgent, error) {
 	if row == nil {
 		err = errors.New("Agent not found")
 	} else {
-		err = row.Scan(&u.ID,&u.Name)
+		err = row.Scan(&u.ID, &u.Name)
 	}
 	return u, err
 }

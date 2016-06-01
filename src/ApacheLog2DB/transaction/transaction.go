@@ -6,8 +6,8 @@ import (
 	"ApacheLog2DB/source"
 	"ApacheLog2DB/user"
 	"database/sql"
-	"time"
 	"errors"
+	"time"
 )
 
 type Transaction struct {
@@ -49,7 +49,7 @@ func CreateTable(d *sql.DB) error {
 
 func Insert(d *sql.DB, t *Transaction) error {
 	_, err := d.Exec("INSERT INTO txns VALUES( NULL,?,?,?,?,?,?,?,?,?,?,? )",
-		t.Ident, t.Verb, t.Protocol, t.Status, t.Size, t.Referrer,t.Occurred,
+		t.Ident, t.Verb, t.Protocol, t.Status, t.Size, t.Referrer, t.Occurred,
 		t.Source.ID,
 		t.Dest.ID,
 		t.Agent.ID,

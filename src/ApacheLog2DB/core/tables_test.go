@@ -7,9 +7,9 @@ import (
 	"ApacheLog2DB/transaction"
 	"ApacheLog2DB/user"
 	"database/sql"
+	_ "github.com/mattn/go-sqlite3"
 	"os"
 	"testing"
-	_ "github.com/mattn/go-sqlite3"
 )
 
 func TestCheckTables(t *testing.T) {
@@ -22,7 +22,7 @@ func TestCheckTables(t *testing.T) {
 		t.Error(err.Error())
 	}
 
-	err, missing := CheckTables(db)
+	missing, err := CheckTables(db)
 	if err == nil {
 		t.Error("Should not have succeeded")
 	}
@@ -34,7 +34,7 @@ func TestCheckTables(t *testing.T) {
 	if err != nil {
 		t.Error(err.Error())
 	}
-	err, missing = CheckTables(db)
+	missing, err = CheckTables(db)
 	if err == nil {
 		t.Error("Should not have succeeded")
 	}
@@ -53,7 +53,7 @@ func TestCheckTablesComplete(t *testing.T) {
 		t.Error(err.Error())
 	}
 
-	err, missing := CheckTables(db)
+	missing, err := CheckTables(db)
 	if err == nil {
 		t.Error("Should not have succeeded")
 	}
@@ -86,7 +86,7 @@ func TestCheckTablesComplete(t *testing.T) {
 		t.Error(err.Error())
 	}
 
-	err, missing = CheckTables(db)
+	missing, err = CheckTables(db)
 	if err != nil {
 		t.Error("Should have succeeded")
 	}
@@ -105,7 +105,7 @@ func TestCreateAllTables(t *testing.T) {
 		t.Error(err.Error())
 	}
 
-	err, missing := CheckTables(db)
+	missing, err := CheckTables(db)
 	if err == nil {
 		t.Error("Should not have succeeded")
 	}
@@ -115,7 +115,7 @@ func TestCreateAllTables(t *testing.T) {
 
 	err = CreateAllTables(db)
 
-	err, missing = CheckTables(db)
+	missing, err = CheckTables(db)
 	if err != nil {
 		t.Error("Should have succeeded")
 	}
