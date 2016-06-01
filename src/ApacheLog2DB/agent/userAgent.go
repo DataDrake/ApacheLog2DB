@@ -36,64 +36,43 @@ func Insert(d *sql.DB, u *UserAgent) error {
 }
 
 func ReadName(d *sql.DB, name string) (*UserAgent, error) {
-	var u *UserAgent
+	u := &UserAgent{}
 	var err error
 	row := d.QueryRow("SELECT * FROM user_agents WHERE name=?", name)
 	if row == nil {
 		err = errors.New("Agent not found")
 	} else {
-		var id int
-		var name string
-		err = row.Scan(&id,&name)
-		if err == nil {
-			u = &UserAgent{id, name}
-		}
+		err = row.Scan(&u.ID,&u.Name)
 	}
 	return u, err
 }
 
 func Read(d *sql.DB, id int) (*UserAgent, error) {
-	var u *UserAgent
+	u := &UserAgent{}
 	var err error
 	row := d.QueryRow("SELECT * FROM user_agents WHERE id=?", id)
 	if row == nil {
 		err = errors.New("Agent not found")
 	} else {
-		var id int
-		var name string
-		err = row.Scan(&id, &name)
-		if err == nil {
-			u = &UserAgent{id, name}
-		}
+		err = row.Scan(&u.ID, &u.Name)
 	}
 	return u, err
 }
 
 func ReadAll(d *sql.DB) ([]*UserAgent, error) {
-	u := make([]*UserAgent, 0)
-	tx, err := d.Begin()
+	us := make([]*UserAgent, 0)
+	rows, err := d.Query("SELECT * FROM user_agents")
 	if err == nil {
-		rows, err := tx.Query("SELECT * FROM user_agents")
-		if err != nil {
-			tx.Rollback()
-		} else {
-			var id int
-			var name string
-			rows.Scan(&id, &name)
-			if id >= 0 && len(name) > 0 {
-				u = append(u, &UserAgent{id, name})
+		for rows.Next() {
+			u := &UserAgent{}
+			rows.Scan(&u.ID, &u.Name)
+			if u.ID >= 0 && len(u.Name) > 0 {
+				us = append(us, u)
 			}
-			for rows.Next() {
-				rows.Scan(&id, &name)
-				if id >= 0 && len(name) > 0 {
-					u = append(u, &UserAgent{id, name})
-				}
-			}
-			rows.Close()
-			tx.Commit()
 		}
+		rows.Close()
 	}
-	return u, err
+	return us, err
 }
 
 func Update(d *sql.DB, u *UserAgent) error {
