@@ -1,11 +1,11 @@
 package core
 
 import (
-	"ApacheLog2DB/agent"
-	"ApacheLog2DB/destination"
-	"ApacheLog2DB/source"
-	"ApacheLog2DB/transaction"
-	"ApacheLog2DB/user"
+	"../agent"
+	"../destination"
+	"../source"
+	"../transaction"
+	"../user"
 	"database/sql"
 	_ "github.com/mattn/go-sqlite3"
 	"os"

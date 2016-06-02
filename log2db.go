@@ -1,8 +1,8 @@
 package main
 
 import (
-	"ApacheLog2DB/core"
 	"database/sql"
+	"./core"
 	"flag"
 	"fmt"
 	_ "github.com/mattn/go-sqlite3"
