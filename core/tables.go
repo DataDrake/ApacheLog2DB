@@ -1,13 +1,13 @@
 package core
 
 import (
-	"ApacheLog2DB/agent"
-	"ApacheLog2DB/destination"
-	"ApacheLog2DB/source"
-	"ApacheLog2DB/transaction"
-	"ApacheLog2DB/user"
 	"database/sql"
 	"errors"
+	"github.com/DataDrake/ApacheLog2DB/agent"
+	"github.com/DataDrake/ApacheLog2DB/source"
+	"github.com/DataDrake/ApacheLog2DB/destination"
+	"github.com/DataDrake/ApacheLog2DB/user"
+	"github.com/DataDrake/ApacheLog2DB/transaction"
 )
 
 func get_tables(db *sql.DB) ([]string, error) {

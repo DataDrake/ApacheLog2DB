@@ -1,11 +1,11 @@
 package core
 
 import (
-	"ApacheLog2DB/transaction"
 	"database/sql"
 	"fmt"
 	"io"
 	"os"
+	"github.com/DataDrake/ApacheLog2DB/transaction"
 )
 
 func safe_string(s string) string {

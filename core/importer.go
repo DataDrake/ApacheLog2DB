@@ -1,11 +1,6 @@
 package core
 
 import (
-	"ApacheLog2DB/agent"
-	"ApacheLog2DB/destination"
-	"ApacheLog2DB/source"
-	"ApacheLog2DB/transaction"
-	"ApacheLog2DB/user"
 	"bufio"
 	"database/sql"
 	"fmt"
@@ -13,6 +8,11 @@ import (
 	"os"
 	"strconv"
 	"time"
+	"github.com/DataDrake/ApacheLog2DB/transaction"
+	"github.com/DataDrake/ApacheLog2DB/source"
+	"github.com/DataDrake/ApacheLog2DB/user"
+	"github.com/DataDrake/ApacheLog2DB/destination"
+	"github.com/DataDrake/ApacheLog2DB/agent"
 )
 
 func ImportLog(log io.Reader, db *sql.DB) {

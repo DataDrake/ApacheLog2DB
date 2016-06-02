@@ -6,7 +6,7 @@ import (
 	"fmt"
 	_ "github.com/mattn/go-sqlite3"
 	"os"
-	"ApacheLog2DB/core"
+	"github.com/DataDrake/ApacheLog2DB/core"
 )
 
 func usage() {

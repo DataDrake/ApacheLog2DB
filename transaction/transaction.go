@@ -1,13 +1,13 @@
 package transaction
 
 import (
-	"ApacheLog2DB/agent"
-	"ApacheLog2DB/destination"
-	"ApacheLog2DB/source"
-	"ApacheLog2DB/user"
 	"database/sql"
 	"errors"
 	"time"
+	"github.com/DataDrake/ApacheLog2DB/source"
+	"github.com/DataDrake/ApacheLog2DB/destination"
+	"github.com/DataDrake/ApacheLog2DB/agent"
+"github.com/DataDrake/ApacheLog2DB/user"
 )
 
 type Transaction struct {
