@@ -1,7 +1,7 @@
 package core
 
 import (
-	"../transaction"
+	"ApacheLog2DB/transaction"
 	"database/sql"
 	"fmt"
 	"io"

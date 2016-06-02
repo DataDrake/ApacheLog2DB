@@ -2,11 +2,11 @@ package main
 
 import (
 	"database/sql"
-	"./core"
 	"flag"
 	"fmt"
 	_ "github.com/mattn/go-sqlite3"
 	"os"
+	"ApacheLog2DB/core"
 )
 
 func usage() {

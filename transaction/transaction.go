@@ -1,10 +1,10 @@
 package transaction
 
 import (
-	"../agent"
-	"../destination"
-	"../source"
-	"../user"
+	"ApacheLog2DB/agent"
+	"ApacheLog2DB/destination"
+	"ApacheLog2DB/source"
+	"ApacheLog2DB/user"
 	"database/sql"
 	"errors"
 	"time"

@@ -1,11 +1,11 @@
 package core
 
 import (
-	"../agent"
-	"../destination"
-	"../source"
-	"../transaction"
-	"../user"
+	"ApacheLog2DB/agent"
+	"ApacheLog2DB/destination"
+	"ApacheLog2DB/source"
+	"ApacheLog2DB/transaction"
+	"ApacheLog2DB/user"
 	"bufio"
 	"database/sql"
 	"fmt"
