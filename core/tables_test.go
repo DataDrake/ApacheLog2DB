@@ -2,14 +2,14 @@ package core
 
 import (
 	"database/sql"
-	_ "github.com/mattn/go-sqlite3"
-	"os"
-	"testing"
-	"github.com/DataDrake/ApacheLog2DB/user"
 	"github.com/DataDrake/ApacheLog2DB/agent"
 	"github.com/DataDrake/ApacheLog2DB/destination"
 	"github.com/DataDrake/ApacheLog2DB/source"
 	"github.com/DataDrake/ApacheLog2DB/transaction"
+	"github.com/DataDrake/ApacheLog2DB/user"
+	_ "github.com/mattn/go-sqlite3"
+	"os"
+	"testing"
 )
 
 func TestCheckTables(t *testing.T) {

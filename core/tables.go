@@ -4,10 +4,10 @@ import (
 	"database/sql"
 	"errors"
 	"github.com/DataDrake/ApacheLog2DB/agent"
-	"github.com/DataDrake/ApacheLog2DB/source"
 	"github.com/DataDrake/ApacheLog2DB/destination"
-	"github.com/DataDrake/ApacheLog2DB/user"
+	"github.com/DataDrake/ApacheLog2DB/source"
 	"github.com/DataDrake/ApacheLog2DB/transaction"
+	"github.com/DataDrake/ApacheLog2DB/user"
 )
 
 func get_tables(db *sql.DB) ([]string, error) {
