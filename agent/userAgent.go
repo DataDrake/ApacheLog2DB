@@ -26,7 +26,7 @@ func ReadOrCreate(db *sql.DB, name string) (*UserAgent, error) {
 }
 
 func CreateTable(d *sql.DB) error {
-	_, err := d.Exec("CREATE TABLE user_agents ( id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT )")
+	_, err := d.Exec("CREATE TABLE user_agents ( id INTEGER AUTO_INCREMENT, name TEXT , PRIMARY KEY (id)")
 	return err
 }
 

@@ -25,7 +25,7 @@ func ReadOrCreate(db *sql.DB, uri string) (*Destination, error) {
 }
 
 func CreateTable(db *sql.DB) error {
-	_, err := db.Exec("CREATE TABLE destinations ( id INTEGER PRIMARY KEY AUTOINCREMENT, uri TEXT )")
+	_, err := db.Exec("CREATE TABLE destinations ( id INTEGER AUTO_INCREMENT, uri TEXT, PRIMARY KEY (id))")
 	return err
 }
 

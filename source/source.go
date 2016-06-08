@@ -26,7 +26,7 @@ func ReadOrCreate(db *sql.DB, IP string) (*Source, error) {
 }
 
 func CreateTable(d *sql.DB) error {
-	_, err := d.Exec("CREATE TABLE sources ( id INTEGER PRIMARY KEY AUTOINCREMENT, ip TEXT )")
+	_, err := d.Exec("CREATE TABLE sources ( id INTEGER AUTO_INCREMENT, ip TEXT , PRIMARY KEY (id))")
 	return err
 }
 

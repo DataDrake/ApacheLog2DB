@@ -27,7 +27,7 @@ type Transaction struct {
 
 func CreateTable(d *sql.DB) error {
 	_, err := d.Exec("CREATE TABLE txns" +
-		"( id INTEGER PRIMARY KEY AUTOINCREMENT," +
+		"( id INTEGER AUTO_INCREMENT," +
 		"ident TEXT, " +
 		"verb TEXT, " +
 		"protocol TEXT, " +
@@ -39,6 +39,7 @@ func CreateTable(d *sql.DB) error {
 		"destid INTEGER, " +
 		"agentid INTEGER, " +
 		"userid INTEGER, " +
+		"PRIMARY KEY (id), " +
 		"FOREIGN KEY(sourceid) REFERENCES sources(id), " +
 		"FOREIGN KEY(destid) REFERENCES destinations(id), " +
 		"FOREIGN KEY(agentid) REFERENCES user_agents(id), " +
