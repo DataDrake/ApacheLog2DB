@@ -16,7 +16,7 @@ func NewAgent(name string) *UserAgent {
 
 func ReadOrCreate(db *sql.DB, name string) (*UserAgent, error) {
 	agent, err := ReadName(db, name)
-	if err != nil {
+	if err == nil {
 		err = Insert(db, NewAgent(name))
 		if err == nil {
 			agent, err = ReadName(db, name)

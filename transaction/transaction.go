@@ -139,3 +139,43 @@ func Update(d *sql.DB, t *Transaction) error {
 		t.Ident, t.Verb, t.Protocol, t.Status, t.Size, t.Referrer, t.Occurred, t.Source.ID, t.Dest.ID, t.Agent.ID, t.User.ID)
 	return err
 }
+
+func ReadWork(d *sql.DB, sourceid int, occured time.Time) ([]*Transaction, error) {
+	ts := make([]*Transaction,0)
+	var err error
+	row,err := d.Query("SELECT * FROM txns WHERE sourceid=? AND occured=?", sourceid, occured)
+	if err != nil {
+		return ts, err
+	}
+	for row.Next() {
+		var sourceid int
+		var destid int
+		var agentid int
+		var userid int
+		t := &Transaction{}
+		err = row.Scan(&t.ID, &t.Ident, &t.Verb, &t.Protocol, &t.Status, &t.Size, &t.Referrer, &t.Occurred, &sourceid, &destid, &agentid, &userid)
+		if err == nil {
+			t.Source, err = source.Read(d, sourceid)
+			if err != nil {
+				continue
+			}
+
+			t.Dest, err = destination.Read(d, destid)
+			if err != nil {
+				continue
+			}
+
+			t.Agent, err = agent.Read(d, agentid)
+			if err != nil {
+				continue
+			}
+
+			t.User, err = user.Read(d, userid)
+			if err != nil {
+				continue
+			}
+			ts = append(ts,t)
+		}
+	}
+	return ts, nil
+}
