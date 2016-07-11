@@ -1,9 +1,9 @@
 package core
 
 import (
-	"database/sql"
 	"github.com/DataDrake/ApacheLog2DB/agent"
 	"github.com/DataDrake/ApacheLog2DB/destination"
+	"github.com/DataDrake/ApacheLog2DB/global"
 	"github.com/DataDrake/ApacheLog2DB/source"
 	"github.com/DataDrake/ApacheLog2DB/transaction"
 	"github.com/DataDrake/ApacheLog2DB/user"
@@ -15,7 +15,7 @@ import (
 func TestCheckTables(t *testing.T) {
 	os.Remove("/tmp/foo.db")
 
-	db, err := sql.Open("sqlite3", "/tmp/foo.db")
+	db, err := global.OpenDatabase("sqlite:///tmp/foo.db")
 	defer db.Close()
 
 	if err != nil {
@@ -46,7 +46,7 @@ func TestCheckTables(t *testing.T) {
 func TestCheckTablesComplete(t *testing.T) {
 	os.Remove("/tmp/foo.db")
 
-	db, err := sql.Open("sqlite3", "/tmp/foo.db")
+	db, err := global.OpenDatabase("sqlite:///tmp/foo.db")
 	defer db.Close()
 
 	if err != nil {
@@ -98,7 +98,7 @@ func TestCheckTablesComplete(t *testing.T) {
 func TestCreateAllTables(t *testing.T) {
 	os.Remove("/tmp/foo.db")
 
-	db, err := sql.Open("sqlite3", "/tmp/foo.db")
+	db, err := global.OpenDatabase("sqlite:///tmp/foo.db")
 	defer db.Close()
 
 	if err != nil {

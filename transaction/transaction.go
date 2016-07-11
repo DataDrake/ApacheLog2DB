@@ -5,10 +5,10 @@ import (
 	"errors"
 	"github.com/DataDrake/ApacheLog2DB/agent"
 	"github.com/DataDrake/ApacheLog2DB/destination"
+	"github.com/DataDrake/ApacheLog2DB/global"
 	"github.com/DataDrake/ApacheLog2DB/source"
 	"github.com/DataDrake/ApacheLog2DB/user"
 	"time"
-	"github.com/DataDrake/ApacheLog2DB/core"
 )
 
 type Transaction struct {
@@ -26,8 +26,8 @@ type Transaction struct {
 	User     *user.User
 }
 
-var CREATE_TABLE = map[string]string {
-	"mysql":`CREATE TABLE txns ( id INTEGER AUTO_INCREMENT,
+var CREATE_TABLE = map[string]string{
+	"mysql": `CREATE TABLE txns ( id INTEGER AUTO_INCREMENT,
 	ident TEXT, verb TEXT, protocol TEXT, status INTEGER,
 	size INTEGER, referrer TEXT, occured DATETIME, sourceid INTEGER,
 	destid INTEGER, agentid INTEGER, userid INTEGER,
@@ -36,18 +36,18 @@ var CREATE_TABLE = map[string]string {
 	FOREIGN KEY(agentid) REFERENCES user_agents(id),
 	FOREIGN KEY(userid) REFERENCES users(id) )`,
 
-	"sqlite":`CREATE TABLE txns ( id INTEGER AUTOINCREMENT,
+	"sqlite": `CREATE TABLE txns ( id INTEGER PRIMARY KEY AUTOINCREMENT,
 	ident TEXT, verb TEXT, protocol TEXT, status INTEGER,
 	size INTEGER, referrer TEXT, occured DATETIME, sourceid INTEGER,
 	destid INTEGER, agentid INTEGER, userid INTEGER,
-	PRIMARY KEY (id), FOREIGN KEY(sourceid) REFERENCES sources(id),
+	FOREIGN KEY(sourceid) REFERENCES sources(id),
 	FOREIGN KEY(destid) REFERENCES destinations(id),
 	FOREIGN KEY(agentid) REFERENCES user_agents(id),
 	FOREIGN KEY(userid) REFERENCES users(id) )`,
 }
 
 func CreateTable(d *sql.DB) error {
-	_, err := d.Exec(CREATE_TABLE[core.DB_TYPE])
+	_, err := d.Exec(CREATE_TABLE[global.DB_TYPE])
 	return err
 }
 
@@ -144,9 +144,9 @@ func Update(d *sql.DB, t *Transaction) error {
 }
 
 func ReadWork(d *sql.DB, sourceid int, occured time.Time) ([]*Transaction, error) {
-	ts := make([]*Transaction,0)
+	ts := make([]*Transaction, 0)
 	var err error
-	row,err := d.Query("SELECT * FROM txns WHERE sourceid=? AND occured=?", sourceid, occured)
+	row, err := d.Query("SELECT * FROM txns WHERE sourceid=? AND occured=?", sourceid, occured)
 	if err != nil {
 		return ts, err
 	}
@@ -177,7 +177,7 @@ func ReadWork(d *sql.DB, sourceid int, occured time.Time) ([]*Transaction, error
 			if err != nil {
 				continue
 			}
-			ts = append(ts,t)
+			ts = append(ts, t)
 		}
 	}
 	return ts, nil

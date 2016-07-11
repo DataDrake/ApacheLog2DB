@@ -3,7 +3,7 @@ package user
 import (
 	"database/sql"
 	"errors"
-	"github.com/DataDrake/ApacheLog2DB/core"
+	"github.com/DataDrake/ApacheLog2DB/global"
 )
 
 type User struct {
@@ -28,12 +28,12 @@ func ReadOrCreate(db *sql.DB, name string) (*User, error) {
 }
 
 var CREATE_TABLE = map[string]string{
-	"mysql":"CREATE TABLE users ( id INTEGER AUTO_INCREMENT, name TEXT, PRIMARY KEY (id))",
-	"sqlite":"CREATE TABLE users ( id INTEGER AUTOINCREMENT, name TEXT, PRIMARY KEY (id))",
+	"mysql":  "CREATE TABLE users ( id INTEGER AUTO_INCREMENT, name TEXT, PRIMARY KEY (id))",
+	"sqlite": "CREATE TABLE users ( id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT)",
 }
 
 func CreateTable(d *sql.DB) error {
-	_, err := d.Exec(CREATE_TABLE[core.DB_TYPE])
+	_, err := d.Exec(CREATE_TABLE[global.DB_TYPE])
 	return err
 }
 

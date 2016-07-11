@@ -5,23 +5,15 @@ import (
 	"flag"
 	"fmt"
 	"github.com/DataDrake/ApacheLog2DB/core"
+	"github.com/DataDrake/ApacheLog2DB/global"
 	_ "github.com/go-sql-driver/mysql"
 	_ "github.com/mattn/go-sqlite3"
 	"os"
-	"strings"
 )
 
 func usage() {
 	fmt.Println("USAGE: log2db [OPTION]... SOURCE DEST")
 	flag.PrintDefaults()
-}
-
-func dbconnection(conn string) (*sql.DB, error) {
-	if strings.HasPrefix(conn, "mysql://") {
-		conn = strings.Replace(conn, "mysql://", "", 1)
-		return sql.Open("mysql", conn)
-	}
-	return sql.Open("sqlite3", conn)
 }
 
 func main() {
@@ -51,7 +43,7 @@ func main() {
 			fmt.Fprintln(os.Stderr, "Input file must be a db string")
 			os.Exit(1)
 		}
-		db, err = dbconnection(args[0])
+		db, err = global.OpenDatabase(args[0])
 		defer db.Close()
 	}
 
@@ -65,7 +57,7 @@ func main() {
 			fmt.Fprintln(os.Stderr, "Output file must be a db string")
 			os.Exit(1)
 		}
-		db, err = dbconnection(args[1])
+		db, err = global.OpenDatabase(args[1])
 		defer db.Close()
 	} else {
 		if !(args[1] == "-" || args[1] == "--") {

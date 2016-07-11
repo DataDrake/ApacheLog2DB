@@ -1,7 +1,7 @@
 package agent
 
 import (
-	"database/sql"
+	"github.com/DataDrake/ApacheLog2DB/global"
 	_ "github.com/mattn/go-sqlite3"
 	"log"
 	"os"
@@ -10,7 +10,7 @@ import (
 
 func TestTableCreate(t *testing.T) {
 	os.Remove("/tmp/foo.db")
-	db, err := sql.Open("sqlite3", "/tmp/foo.db")
+	db, err := global.OpenDatabase("sqlite:///tmp/foo.db")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -23,7 +23,7 @@ func TestTableCreate(t *testing.T) {
 
 func TestReadAllEmpty(t *testing.T) {
 	os.Remove("/tmp/foo.db")
-	db, err := sql.Open("sqlite3", "/tmp/foo.db")
+	db, err := global.OpenDatabase("sqlite:///tmp/foo.db")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -43,7 +43,7 @@ func TestReadAllEmpty(t *testing.T) {
 
 func TestInsertOne(t *testing.T) {
 	os.Remove("/tmp/foo.db")
-	db, err := sql.Open("sqlite3", "/tmp/foo.db")
+	db, err := global.OpenDatabase("sqlite:///tmp/foo.db")
 	if err != nil {
 		log.Fatal(err)
 	}

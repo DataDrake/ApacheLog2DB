@@ -3,7 +3,7 @@ package source
 import (
 	"database/sql"
 	"errors"
-	"github.com/DataDrake/ApacheLog2DB/core"
+	"github.com/DataDrake/ApacheLog2DB/global"
 )
 
 type Source struct {
@@ -26,13 +26,13 @@ func ReadOrCreate(db *sql.DB, IP string) (*Source, error) {
 	return src, err
 }
 
-var CREATE_TABLE = map[string]string {
-	"mysql":"CREATE TABLE sources ( id INTEGER AUTO_INCREMENT, ip TEXT , PRIMARY KEY (id))",
-	"sqlite":"CREATE TABLE sources ( id INTEGER AUTOINCREMENT, ip TEXT , PRIMARY KEY (id))",
+var CREATE_TABLE = map[string]string{
+	"mysql":  "CREATE TABLE sources ( id INTEGER AUTO_INCREMENT, ip TEXT , PRIMARY KEY (id))",
+	"sqlite": "CREATE TABLE sources ( id INTEGER PRIMARY KEY AUTOINCREMENT, ip TEXT)",
 }
 
 func CreateTable(d *sql.DB) error {
-	_, err := d.Exec(CREATE_TABLE[core.DB_TYPE])
+	_, err := d.Exec(CREATE_TABLE[global.DB_TYPE])
 	return err
 }
 
