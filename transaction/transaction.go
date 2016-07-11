@@ -146,7 +146,7 @@ func Update(d *sql.DB, t *Transaction) error {
 func ReadWork(d *sql.DB, sourceid int, start time.Time, stop time.Time) ([]*Transaction, error) {
 	ts := make([]*Transaction, 0)
 	var err error
-	row, err := d.Query("SELECT * FROM txns WHERE sourceid=? AND occured>=? AND occured<?", sourceid, start)
+	row, err := d.Query("SELECT * FROM txns WHERE sourceid=? AND occured>=? AND occured<?", sourceid, start, stop)
 	if err != nil {
 		return ts, err
 	}
