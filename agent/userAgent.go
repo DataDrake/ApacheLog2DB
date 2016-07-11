@@ -4,6 +4,8 @@ import (
 	"database/sql"
 	"errors"
 	"github.com/DataDrake/ApacheLog2DB/global"
+	"fmt"
+	"os"
 )
 
 type UserAgent struct {
@@ -19,9 +21,10 @@ func ReadOrCreate(db *sql.DB, name string) (*UserAgent, error) {
 	agent, err := ReadName(db, name)
 	if err == nil {
 		err = Insert(db, NewAgent(name))
-		if err == nil {
-			agent, err = ReadName(db, name)
+		if err != nil {
+			fmt.Fprintf(os.Stderr,"[AGENT] Error: %s\n", err.Error())
 		}
+		agent, err = ReadName(db, name)
 	}
 	return agent, err
 }
