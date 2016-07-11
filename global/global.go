@@ -18,7 +18,7 @@ func OpenDatabase(connection string) (db *sql.DB, err error) {
 		db, err = sql.Open("mysql", connection)
 	case "sqlite":
 		DB_TYPE = "sqlite"
-		db, err = sql.Open("sqlite3", strings.Replace(protocol[1],"//","",1))
+		db, err = sql.Open("sqlite3", strings.Replace(protocol[1], "//", "", 1))
 	default:
 		err = errors.New("Unsupported database type: " + protocol[0])
 	}
