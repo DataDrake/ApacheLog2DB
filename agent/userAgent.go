@@ -3,6 +3,7 @@ package agent
 import (
 	"database/sql"
 	"errors"
+	"github.com/DataDrake/ApacheLog2DB/core"
 )
 
 type UserAgent struct {
@@ -25,8 +26,13 @@ func ReadOrCreate(db *sql.DB, name string) (*UserAgent, error) {
 	return agent, err
 }
 
+var CREATE_TABLE = map[string]string {
+	"mysql":"CREATE TABLE user_agents ( id INTEGER NOT NULL AUTO_INCREMENT, name TEXT , PRIMARY KEY (id) )",
+	"sqlite":"CREATE TABLE user_agents ( id INTEGER NOT NULL AUTOINCREMENT, name TEXT , PRIMARY KEY (id) )",
+}
+
 func CreateTable(d *sql.DB) error {
-	_, err := d.Exec("CREATE TABLE user_agents ( id INTEGER NOT NULL AUTO_INCREMENT, name TEXT , PRIMARY KEY (id) )")
+	_, err := d.Exec(CREATE_TABLE[core.DB_TYPE])
 	return err
 }
 

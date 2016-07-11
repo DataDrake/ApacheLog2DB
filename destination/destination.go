@@ -3,6 +3,7 @@ package destination
 import (
 	"database/sql"
 	"errors"
+	"github.com/DataDrake/ApacheLog2DB/core"
 )
 
 type Destination struct {
@@ -24,8 +25,13 @@ func ReadOrCreate(db *sql.DB, uri string) (*Destination, error) {
 	return dest, err
 }
 
+var CREATE_TABLE = map[string]string {
+	"mysql":"CREATE TABLE destinations ( id INTEGER AUTO_INCREMENT, uri TEXT, PRIMARY KEY (id))",
+	"sqlite":"CREATE TABLE destinations ( id INTEGER AUTOINCREMENT, uri TEXT, PRIMARY KEY (id))",
+}
+
 func CreateTable(db *sql.DB) error {
-	_, err := db.Exec("CREATE TABLE destinations ( id INTEGER AUTO_INCREMENT, uri TEXT, PRIMARY KEY (id))")
+	_, err := db.Exec(CREATE_TABLE[core.DB_TYPE])
 	return err
 }
 

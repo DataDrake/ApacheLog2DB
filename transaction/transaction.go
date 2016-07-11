@@ -8,6 +8,7 @@ import (
 	"github.com/DataDrake/ApacheLog2DB/source"
 	"github.com/DataDrake/ApacheLog2DB/user"
 	"time"
+	"github.com/DataDrake/ApacheLog2DB/core"
 )
 
 type Transaction struct {
@@ -25,26 +26,28 @@ type Transaction struct {
 	User     *user.User
 }
 
+var CREATE_TABLE = map[string]string {
+	"mysql":`CREATE TABLE txns ( id INTEGER AUTO_INCREMENT,
+	ident TEXT, verb TEXT, protocol TEXT, status INTEGER,
+	size INTEGER, referrer TEXT, occured DATETIME, sourceid INTEGER,
+	destid INTEGER, agentid INTEGER, userid INTEGER,
+	PRIMARY KEY (id), FOREIGN KEY(sourceid) REFERENCES sources(id),
+	FOREIGN KEY(destid) REFERENCES destinations(id),
+	FOREIGN KEY(agentid) REFERENCES user_agents(id),
+	FOREIGN KEY(userid) REFERENCES users(id) )`,
+
+	"sqlite":`CREATE TABLE txns ( id INTEGER AUTOINCREMENT,
+	ident TEXT, verb TEXT, protocol TEXT, status INTEGER,
+	size INTEGER, referrer TEXT, occured DATETIME, sourceid INTEGER,
+	destid INTEGER, agentid INTEGER, userid INTEGER,
+	PRIMARY KEY (id), FOREIGN KEY(sourceid) REFERENCES sources(id),
+	FOREIGN KEY(destid) REFERENCES destinations(id),
+	FOREIGN KEY(agentid) REFERENCES user_agents(id),
+	FOREIGN KEY(userid) REFERENCES users(id) )`,
+}
+
 func CreateTable(d *sql.DB) error {
-	_, err := d.Exec("CREATE TABLE txns" +
-		"( id INTEGER AUTO_INCREMENT," +
-		"ident TEXT, " +
-		"verb TEXT, " +
-		"protocol TEXT, " +
-		"status INTEGER, " +
-		"size INTEGER, " +
-		"referrer TEXT, " +
-		"occured DATETIME, " +
-		"sourceid INTEGER, " +
-		"destid INTEGER, " +
-		"agentid INTEGER, " +
-		"userid INTEGER, " +
-		"PRIMARY KEY (id), " +
-		"FOREIGN KEY(sourceid) REFERENCES sources(id), " +
-		"FOREIGN KEY(destid) REFERENCES destinations(id), " +
-		"FOREIGN KEY(agentid) REFERENCES user_agents(id), " +
-		"FOREIGN KEY(userid) REFERENCES users(id)" +
-		" )")
+	_, err := d.Exec(CREATE_TABLE[core.DB_TYPE])
 	return err
 }
 
