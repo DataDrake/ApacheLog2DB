@@ -3,8 +3,8 @@ package agent
 import (
 	"database/sql"
 	"errors"
-	"github.com/DataDrake/ApacheLog2DB/global"
 	"fmt"
+	"github.com/DataDrake/ApacheLog2DB/global"
 	"os"
 )
 
@@ -22,7 +22,7 @@ func ReadOrCreate(db *sql.DB, name string) (*UserAgent, error) {
 	if err != nil {
 		err = Insert(db, NewAgent(name))
 		if err != nil {
-			fmt.Fprintf(os.Stderr,"[AGENT] Error: %s\n", err.Error())
+			fmt.Fprintf(os.Stderr, "[AGENT] Error: %s\n", err.Error())
 		}
 		agent, err = ReadName(db, name)
 	}
