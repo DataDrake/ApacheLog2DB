@@ -15,7 +15,7 @@ func OpenDatabase(connection string) (db *sql.DB, err error) {
 	switch protocol[0] {
 	case "mysql":
 		DB_TYPE = "mysql"
-		db, err = sql.Open("mysql", connection)
+		db, err = sql.Open("mysql", strings.Replace(connection, "mysql://", "", 1))
 	case "sqlite":
 		DB_TYPE = "sqlite"
 		db, err = sql.Open("sqlite3", strings.Replace(protocol[1], "//", "", 1))
