@@ -9,6 +9,8 @@ import (
 	"github.com/DataDrake/ApacheLog2DB/source"
 	"github.com/DataDrake/ApacheLog2DB/user"
 	"time"
+	"fmt"
+	"os"
 )
 
 type Transaction struct {
@@ -160,25 +162,32 @@ func ReadWork(d *sql.DB, sourceid int, start time.Time, stop time.Time) ([]*Tran
 		if err == nil {
 			t.Source, err = source.Read(d, sourceid)
 			if err != nil {
+				fmt.Fprint(os.Stderr,"Could not get source")
 				continue
 			}
 
 			t.Dest, err = destination.Read(d, destid)
 			if err != nil {
+				fmt.Fprint(os.Stderr,"Could not get dest")
 				continue
 			}
 
 			t.Agent, err = agent.Read(d, agentid)
 			if err != nil {
+				fmt.Fprint(os.Stderr,"Could not get agent")
 				continue
 			}
 
 			t.User, err = user.Read(d, userid)
 			if err != nil {
+				fmt.Fprint(os.Stderr,"Could not get user")
 				continue
 			}
 			ts = append(ts, t)
+		} else {
+			fmt.Println(err.Error())
 		}
 	}
+	fmt.Println(ts)
 	return ts, nil
 }
