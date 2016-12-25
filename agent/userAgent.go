@@ -1,7 +1,6 @@
 package agent
 
 import (
-	"errors"
 	"fmt"
 	"github.com/DataDrake/ApacheLog2DB/global"
     "github.com/jmoiron/sqlx"
@@ -40,51 +39,29 @@ func CreateTable(d *sqlx.DB) error {
 }
 
 func Insert(d *sqlx.DB, u *UserAgent) error {
-	_, err := d.Exec("INSERT INTO user_agents VALUES( NULL , ? )", u.Name)
+	_, err := d.Exec("INSERT INTO user_agents VALUES( NULL , $1 )", u.Name)
 	return err
 }
 
-func ReadName(d *sqlx.DB, name string) (*UserAgent, error) {
-	u := &UserAgent{}
-	var err error
-	row := d.QueryRow("SELECT * FROM user_agents WHERE name=?", name)
-	if row == nil {
-		err = errors.New("Agent not found")
-	} else {
-		err = row.Scan(&u.ID, &u.Name)
-	}
-	return u, err
+func ReadName(d *sqlx.DB, name string) (u *UserAgent, err error) {
+	u = &UserAgent{}
+	err = d.Get(u, "SELECT * FROM user_agents WHERE name=$1", name)
+	return
 }
 
-func Read(d *sqlx.DB, id int) (*UserAgent, error) {
-	u := &UserAgent{}
-	var err error
-	row := d.QueryRow("SELECT * FROM user_agents WHERE id=?", id)
-	if row == nil {
-		err = errors.New("Agent not found")
-	} else {
-		err = row.Scan(&u.ID, &u.Name)
-	}
-	return u, err
+func Read(d *sqlx.DB, id int) (u *UserAgent, err error) {
+	u = &UserAgent{}
+	err = d.Get(u, "SELECT * FROM user_agents WHERE id=$1", id)
+	return
 }
 
-func ReadAll(d *sqlx.DB) ([]*UserAgent, error) {
-	us := make([]*UserAgent, 0)
-	rows, err := d.Query("SELECT * FROM user_agents")
-	if err == nil {
-		for rows.Next() {
-			u := &UserAgent{}
-			rows.Scan(&u.ID, &u.Name)
-			if u.ID >= 0 && len(u.Name) > 0 {
-				us = append(us, u)
-			}
-		}
-		rows.Close()
-	}
+func ReadAll(d *sqlx.DB) (us []*UserAgent, err error) {
+	us = []*UserAgent{}
+	err = d.Select(&us, "SELECT * FROM user_agents")
 	return us, err
 }
 
 func Update(d *sqlx.DB, u *UserAgent) error {
-	_, err := d.Exec("UPDATE user_agents SET name=? WHERE id=?", u.Name, u.ID)
+	_, err := d.Exec("UPDATE user_agents SET name=$1 WHERE id=$2", u.Name, u.ID)
 	return err
 }

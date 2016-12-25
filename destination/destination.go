@@ -1,7 +1,6 @@
 package destination
 
 import (
-	"errors"
 	"github.com/DataDrake/ApacheLog2DB/global"
     "github.com/jmoiron/sqlx"
 )
@@ -36,48 +35,26 @@ func CreateTable(db *sqlx.DB) error {
 }
 
 func Insert(db *sqlx.DB, d *Destination) error {
-	_, err := db.Exec("INSERT INTO destinations VALUES( NULL , ? )", d.URI)
+	_, err := db.Exec("INSERT INTO destinations VALUES( NULL , $1 )", d.URI)
 	return err
 }
 
-func ReadURI(db *sqlx.DB, uri string) (*Destination, error) {
-	d := &Destination{}
-	var err error
-	row := db.QueryRow("SELECT * FROM destinations WHERE uri=?", uri)
-	if row == nil {
-		err = errors.New("Destination not found")
-	} else {
-		err = row.Scan(&d.ID, &d.URI)
-	}
-	return d, err
+func ReadURI(db *sqlx.DB, uri string) (d *Destination, err error) {
+	d = &Destination{}
+	err = db.Get(d, "SELECT * FROM destinations WHERE uri=$1", uri)
+	return
 }
 
-func Read(db *sqlx.DB, id int) (*Destination, error) {
-	d := &Destination{}
-	var err error
-	row := db.QueryRow("SELECT * FROM destinations WHERE id=?", id)
-	if row == nil {
-		err = errors.New("Destination not found")
-	} else {
-		err = row.Scan(&d.ID, &d.URI)
-	}
-	return d, err
+func Read(db *sqlx.DB, id int) (d *Destination, err error) {
+	d = &Destination{}
+	err = db.Get(d, "SELECT * FROM destinations WHERE id=$1", id)
+	return
 }
 
-func ReadAll(d *sqlx.DB) ([]*Destination, error) {
-	ds := make([]*Destination, 0)
-	rows, err := d.Query("SELECT * FROM destinations")
-	if err == nil {
-		for rows.Next() {
-			d := &Destination{}
-			rows.Scan(&d.ID, &d.URI)
-			if d.ID >= 0 && len(d.URI) > 0 {
-				ds = append(ds, d)
-			}
-		}
-		rows.Close()
-	}
-	return ds, err
+func ReadAll(d *sqlx.DB) (ds []*Destination, err error) {
+	ds = []*Destination{}
+	err = d.Select(&ds, "SELECT * FROM destinations")
+	return
 }
 
 func Update(db *sqlx.DB, d *Destination) error {

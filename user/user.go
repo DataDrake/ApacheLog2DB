@@ -1,7 +1,6 @@
 package user
 
 import (
-	"errors"
 	"github.com/DataDrake/ApacheLog2DB/global"
     "github.com/jmoiron/sqlx"
 )
@@ -42,44 +41,22 @@ func Insert(d *sqlx.DB, u *User) error {
 	return err
 }
 
-func ReadName(d *sqlx.DB, name string) (*User, error) {
-	u := &User{}
-	var err error
-	row := d.QueryRow("SELECT * FROM users WHERE name=?", name)
-	if row == nil {
-		err = errors.New("User not found")
-	} else {
-		err = row.Scan(&u.ID, &u.Name)
-	}
-	return u, err
+func ReadName(d *sqlx.DB, name string) (u *User, err error) {
+	u = &User{}
+	err = d.Get(u,"SELECT * FROM users WHERE name=$1", name)
+	return
 }
 
-func Read(d *sqlx.DB, id int) (*User, error) {
-	u := &User{}
-	var err error
-	row := d.QueryRow("SELECT * FROM users WHERE id=?", id)
-	if row == nil {
-		err = errors.New("User not found")
-	} else {
-		err = row.Scan(&u.ID, &u.Name)
-	}
-	return u, err
+func Read(d *sqlx.DB, id int) (u *User, err error) {
+	u  = &User{}
+	err = d.Get(u, "SELECT * FROM users WHERE id=$1", id)
+	return
 }
 
-func ReadAll(d *sqlx.DB) ([]*User, error) {
-	us := make([]*User, 0)
-	rows, err := d.Query("SELECT * FROM users")
-	if err == nil {
-		for rows.Next() {
-			u := &User{}
-			rows.Scan(&u.ID, &u.Name)
-			if u.ID >= 0 && len(u.Name) > 0 {
-				us = append(us, u)
-			}
-		}
-		rows.Close()
-	}
-	return us, err
+func ReadAll(d *sqlx.DB) (us []*User, err error) {
+	us = []*User{}
+	err = d.Select(&us, "SELECT * FROM users")
+	return
 }
 
 func Update(d *sqlx.DB, u *User) error {

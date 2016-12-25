@@ -1,7 +1,6 @@
 package transaction
 
 import (
-	"errors"
 	"github.com/DataDrake/ApacheLog2DB/agent"
 	"github.com/DataDrake/ApacheLog2DB/destination"
 	"github.com/DataDrake/ApacheLog2DB/global"
@@ -23,9 +22,13 @@ type Transaction struct {
 	Referrer string
 	Occurred time.Time
 	Source   *source.Source
+    SourceID int
 	Dest     *destination.Destination
+    DestID   int
 	Agent    *agent.UserAgent
+    AgentID  int
 	User     *user.User
+    UserID   int
 }
 
 var CREATE_TABLE = map[string]string{
@@ -63,41 +66,28 @@ func Insert(d *sqlx.DB, t *Transaction) error {
 	return err
 }
 
-func Read(d *sqlx.DB, id int) (*Transaction, error) {
-	t := &Transaction{}
-	var err error
-	row := d.QueryRow("SELECT * FROM txns WHERE id=?", id)
-	if row != nil {
-		err = errors.New("Transaction not found")
-	} else {
-		var sourceid int
-		var destid int
-		var agentid int
-		var userid int
-		err = row.Scan(&t.ID, &t.Ident, &t.Verb, &t.Protocol, &t.Status, &t.Size, &t.Referrer, &t.Occurred, &sourceid, &destid, &agentid, &userid)
-		if err == nil {
-			t.Source, err = source.Read(d, sourceid)
-			if err != nil {
-				return nil, err
-			}
-
-			t.Dest, err = destination.Read(d, destid)
-			if err != nil {
-				return nil, err
-			}
-
-			t.Agent, err = agent.Read(d, agentid)
-			if err != nil {
-				return nil, err
-			}
-
-			t.User, err = user.Read(d, userid)
-			if err != nil {
-				return nil, err
-			}
-		}
+func Read(d *sqlx.DB, id int) (t *Transaction, err error) {
+	t = &Transaction{}
+	err = d.Get(t, "SELECT * FROM txns WHERE id=$1", id)
+	if err != nil {
+		return
 	}
-	return t, err
+	t.Source, err = source.Read(d, t.SourceID)
+	if err != nil {
+		return
+	}
+
+	t.Dest, err = destination.Read(d, t.DestID)
+	if err != nil {
+		return
+	}
+
+	t.Agent, err = agent.Read(d, t.AgentID)
+	if err != nil {
+		return
+	}
+	t.User, err = user.Read(d, t.UserID)
+	return
 }
 
 func ReadAll(db *sqlx.DB) ([]*Transaction, error) {

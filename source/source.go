@@ -1,7 +1,6 @@
 package source
 
 import (
-	"errors"
 	"github.com/DataDrake/ApacheLog2DB/global"
     "github.com/jmoiron/sqlx"
 )
@@ -37,48 +36,26 @@ func CreateTable(d *sqlx.DB) error {
 }
 
 func Insert(d *sqlx.DB, s *Source) error {
-	_, err := d.Exec("INSERT INTO sources VALUES( NULL , ? )", s.IP)
+	_, err := d.Exec("INSERT INTO sources VALUES( NULL , $1 )", s.IP)
 	return err
 }
 
-func ReadIP(d *sqlx.DB, ip string) (*Source, error) {
-	s := &Source{}
-	var err error
-	row := d.QueryRow("SELECT * FROM sources WHERE ip=?", ip)
-	if row == nil {
-		err = errors.New("Source not found")
-	} else {
-		err = row.Scan(&s.ID, &s.IP)
-	}
-	return s, err
+func ReadIP(d *sqlx.DB, ip string) (s *Source, err error) {
+	s = &Source{}
+	err = d.Get(s, "SELECT * FROM sources WHERE ip=$1", ip)
+	return
 }
 
-func Read(d *sqlx.DB, id int) (*Source, error) {
-	s := &Source{}
-	var err error
-	row := d.QueryRow("SELECT * FROM sources WHERE id=?", id)
-	if row == nil {
-		err = errors.New("Source not found")
-	} else {
-		err = row.Scan(&s.ID, &s.IP)
-	}
-	return s, err
+func Read(d *sqlx.DB, id int) (s *Source, err error) {
+	s = &Source{}
+	err = d.Get(s, "SELECT * FROM sources WHERE id=$1", id)
+	return
 }
 
-func ReadAll(d *sqlx.DB) ([]*Source, error) {
-	ss := make([]*Source, 0)
-	rows, err := d.Query("SELECT * FROM sources")
-	if err == nil {
-		for rows.Next() {
-			s := &Source{}
-			rows.Scan(&s.ID, &s.IP)
-			if s.ID >= 0 && len(s.IP) > 0 {
-				ss = append(ss, s)
-			}
-		}
-		rows.Close()
-	}
-	return ss, err
+func ReadAll(d *sqlx.DB) (ss []*Source, err error) {
+	ss = []*Source{}
+	err = d.Select(&ss, "SELECT * FROM sources")
+	return
 }
 
 func Update(d *sqlx.DB, s *Source) error {
