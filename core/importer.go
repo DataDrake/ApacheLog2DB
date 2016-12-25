@@ -2,20 +2,20 @@ package core
 
 import (
 	"bufio"
-	"database/sql"
 	"fmt"
 	"github.com/DataDrake/ApacheLog2DB/agent"
 	"github.com/DataDrake/ApacheLog2DB/destination"
 	"github.com/DataDrake/ApacheLog2DB/source"
 	"github.com/DataDrake/ApacheLog2DB/transaction"
 	"github.com/DataDrake/ApacheLog2DB/user"
+    "github.com/jmoiron/sqlx"
 	"io"
 	"os"
 	"strconv"
 	"time"
 )
 
-func ImportLog(log io.Reader, db *sql.DB) {
+func ImportLog(log io.Reader, db *sqlx.DB) {
 	err := CreateAllTables(db)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, err.Error())

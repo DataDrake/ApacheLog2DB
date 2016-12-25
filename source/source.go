@@ -1,9 +1,9 @@
 package source
 
 import (
-	"database/sql"
 	"errors"
 	"github.com/DataDrake/ApacheLog2DB/global"
+    "github.com/jmoiron/sqlx"
 )
 
 type Source struct {
@@ -15,7 +15,7 @@ func NewSource(ip string) *Source {
 	return &Source{-1, ip}
 }
 
-func ReadOrCreate(db *sql.DB, IP string) (*Source, error) {
+func ReadOrCreate(db *sqlx.DB, IP string) (*Source, error) {
 	src, err := ReadIP(db, IP)
 	if err != nil {
 		err = Insert(db, NewSource(IP))
@@ -31,17 +31,17 @@ var CREATE_TABLE = map[string]string{
 	"sqlite": "CREATE TABLE sources ( id INTEGER PRIMARY KEY AUTOINCREMENT, ip TEXT)",
 }
 
-func CreateTable(d *sql.DB) error {
+func CreateTable(d *sqlx.DB) error {
 	_, err := d.Exec(CREATE_TABLE[global.DB_TYPE])
 	return err
 }
 
-func Insert(d *sql.DB, s *Source) error {
+func Insert(d *sqlx.DB, s *Source) error {
 	_, err := d.Exec("INSERT INTO sources VALUES( NULL , ? )", s.IP)
 	return err
 }
 
-func ReadIP(d *sql.DB, ip string) (*Source, error) {
+func ReadIP(d *sqlx.DB, ip string) (*Source, error) {
 	s := &Source{}
 	var err error
 	row := d.QueryRow("SELECT * FROM sources WHERE ip=?", ip)
@@ -53,7 +53,7 @@ func ReadIP(d *sql.DB, ip string) (*Source, error) {
 	return s, err
 }
 
-func Read(d *sql.DB, id int) (*Source, error) {
+func Read(d *sqlx.DB, id int) (*Source, error) {
 	s := &Source{}
 	var err error
 	row := d.QueryRow("SELECT * FROM sources WHERE id=?", id)
@@ -65,7 +65,7 @@ func Read(d *sql.DB, id int) (*Source, error) {
 	return s, err
 }
 
-func ReadAll(d *sql.DB) ([]*Source, error) {
+func ReadAll(d *sqlx.DB) ([]*Source, error) {
 	ss := make([]*Source, 0)
 	rows, err := d.Query("SELECT * FROM sources")
 	if err == nil {
@@ -81,7 +81,7 @@ func ReadAll(d *sql.DB) ([]*Source, error) {
 	return ss, err
 }
 
-func Update(d *sql.DB, s *Source) error {
+func Update(d *sqlx.DB, s *Source) error {
 	_, err := d.Exec("UPDATE sources SET ip=? WHERE id=?", s.IP, s.ID)
 	return err
 }

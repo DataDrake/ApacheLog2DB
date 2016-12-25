@@ -1,9 +1,9 @@
 package core
 
 import (
-	"database/sql"
 	"fmt"
 	"github.com/DataDrake/ApacheLog2DB/transaction"
+    "github.com/jmoiron/sqlx"
 	"io"
 	"os"
 )
@@ -15,7 +15,7 @@ func safe_string(s string) string {
 	return s
 }
 
-func ExportLog(db *sql.DB, w io.Writer) {
+func ExportLog(db *sqlx.DB, w io.Writer) {
 	txns, err := transaction.ReadAll(db)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, err.Error())

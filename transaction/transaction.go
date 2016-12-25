@@ -1,13 +1,13 @@
 package transaction
 
 import (
-	"database/sql"
 	"errors"
 	"github.com/DataDrake/ApacheLog2DB/agent"
 	"github.com/DataDrake/ApacheLog2DB/destination"
 	"github.com/DataDrake/ApacheLog2DB/global"
 	"github.com/DataDrake/ApacheLog2DB/source"
 	"github.com/DataDrake/ApacheLog2DB/user"
+    "github.com/jmoiron/sqlx"
 	"time"
 	"fmt"
 	"os"
@@ -48,12 +48,12 @@ var CREATE_TABLE = map[string]string{
 	FOREIGN KEY(userid) REFERENCES users(id) )`,
 }
 
-func CreateTable(d *sql.DB) error {
+func CreateTable(d *sqlx.DB) error {
 	_, err := d.Exec(CREATE_TABLE[global.DB_TYPE])
 	return err
 }
 
-func Insert(d *sql.DB, t *Transaction) error {
+func Insert(d *sqlx.DB, t *Transaction) error {
 	_, err := d.Exec("INSERT INTO txns VALUES( NULL,?,?,?,?,?,?,?,?,?,?,? )",
 		t.Ident, t.Verb, t.Protocol, t.Status, t.Size, t.Referrer, t.Occurred,
 		t.Source.ID,
@@ -63,7 +63,7 @@ func Insert(d *sql.DB, t *Transaction) error {
 	return err
 }
 
-func Read(d *sql.DB, id int) (*Transaction, error) {
+func Read(d *sqlx.DB, id int) (*Transaction, error) {
 	t := &Transaction{}
 	var err error
 	row := d.QueryRow("SELECT * FROM txns WHERE id=?", id)
@@ -100,7 +100,7 @@ func Read(d *sql.DB, id int) (*Transaction, error) {
 	return t, err
 }
 
-func ReadAll(db *sql.DB) ([]*Transaction, error) {
+func ReadAll(db *sqlx.DB) ([]*Transaction, error) {
 	ts := make([]*Transaction, 0)
 	rows, err := db.Query("SELECT * FROM txns")
 	if err == nil {
@@ -139,13 +139,13 @@ func ReadAll(db *sql.DB) ([]*Transaction, error) {
 	return ts, err
 }
 
-func Update(d *sql.DB, t *Transaction) error {
+func Update(d *sqlx.DB, t *Transaction) error {
 	_, err := d.Exec("UPDATE txns SET ident=?,verb=?,protocol=?,status=?,size=?,referrer=?,occurred=?,sourceid=?,destid=?,agentid=?,userid=? WHERE id=?",
 		t.Ident, t.Verb, t.Protocol, t.Status, t.Size, t.Referrer, t.Occurred, t.Source.ID, t.Dest.ID, t.Agent.ID, t.User.ID)
 	return err
 }
 
-func ReadWork(d *sql.DB, sourceid int, start time.Time, stop time.Time) ([]*Transaction, error) {
+func ReadWork(d *sqlx.DB, sourceid int, start time.Time, stop time.Time) ([]*Transaction, error) {
 	ts := make([]*Transaction, 0)
 	var err error
 	row, err := d.Query("SELECT * FROM txns WHERE sourceid=? AND occured>=? AND occured<?", sourceid, start, stop)

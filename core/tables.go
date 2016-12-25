@@ -1,7 +1,6 @@
 package core
 
 import (
-	"database/sql"
 	"errors"
 	"github.com/DataDrake/ApacheLog2DB/agent"
 	"github.com/DataDrake/ApacheLog2DB/destination"
@@ -9,6 +8,7 @@ import (
 	"github.com/DataDrake/ApacheLog2DB/source"
 	"github.com/DataDrake/ApacheLog2DB/transaction"
 	"github.com/DataDrake/ApacheLog2DB/user"
+    "github.com/jmoiron/sqlx"
 )
 
 var GET_TABLES = map[string]string{
@@ -16,7 +16,7 @@ var GET_TABLES = map[string]string{
 	"sqlite": "SELECT name FROM sqlite_master WHERE type='table'",
 }
 
-func get_tables(db *sql.DB) ([]string, error) {
+func get_tables(db *sqlx.DB) ([]string, error) {
 	tables := make([]string, 0)
 	found, err := db.Query(GET_TABLES[global.DB_TYPE])
 	if err != nil {
@@ -37,7 +37,7 @@ func get_tables(db *sql.DB) ([]string, error) {
 	return tables, err
 }
 
-func CreateAllTables(db *sql.DB) error {
+func CreateAllTables(db *sqlx.DB) error {
 	missing, err := CheckTables(db)
 
 	if SliceContains(missing, "user_agents") {
@@ -74,7 +74,7 @@ func CreateAllTables(db *sql.DB) error {
 	return err
 }
 
-func CheckTables(db *sql.DB) ([]string, error) {
+func CheckTables(db *sqlx.DB) ([]string, error) {
 	tables, err := get_tables(db)
 	if err != nil {
 		return nil, err

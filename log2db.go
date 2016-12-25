@@ -1,12 +1,12 @@
 package main
 
 import (
-	"database/sql"
 	"flag"
 	"fmt"
 	"github.com/DataDrake/ApacheLog2DB/core"
 	"github.com/DataDrake/ApacheLog2DB/global"
 	_ "github.com/go-sql-driver/mysql"
+    "github.com/jmoiron/sqlx"
 	_ "github.com/mattn/go-sqlite3"
 	"os"
 )
@@ -28,7 +28,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	var db *sql.DB
+	var db *sqlx.DB
 	var err error
 	reader := os.Stdin
 	writer := os.Stdout
