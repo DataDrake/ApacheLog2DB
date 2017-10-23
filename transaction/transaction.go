@@ -178,6 +178,5 @@ func ReadWork(d *sqlx.DB, sourceid int, start time.Time, stop time.Time) ([]*Tra
 			fmt.Println(err.Error())
 		}
 	}
-	fmt.Println(ts)
 	return ts, nil
 }
