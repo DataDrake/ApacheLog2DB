@@ -1,15 +1,31 @@
+//
+// Copyright 2016-2017 Bryan T. Meyers <bmeyers@datadrake.com>
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+//
+
 package transaction
 
 import (
+	"fmt"
 	"github.com/DataDrake/ApacheLog2DB/agent"
 	"github.com/DataDrake/ApacheLog2DB/destination"
 	"github.com/DataDrake/ApacheLog2DB/global"
 	"github.com/DataDrake/ApacheLog2DB/source"
 	"github.com/DataDrake/ApacheLog2DB/user"
-    "github.com/jmoiron/sqlx"
-	"time"
-	"fmt"
+	"github.com/jmoiron/sqlx"
 	"os"
+	"time"
 )
 
 type Transaction struct {
@@ -22,13 +38,13 @@ type Transaction struct {
 	Referrer string
 	Occurred time.Time
 	Source   *source.Source
-    SourceID int
+	SourceID int
 	Dest     *destination.Destination
-    DestID   int
+	DestID   int
 	Agent    *agent.UserAgent
-    AgentID  int
+	AgentID  int
 	User     *user.User
-    UserID   int
+	UserID   int
 }
 
 var CREATE_TABLE = map[string]string{
@@ -152,25 +168,25 @@ func ReadWork(d *sqlx.DB, sourceid int, start time.Time, stop time.Time) ([]*Tra
 		if err == nil {
 			t.Source, err = source.Read(d, sourceid)
 			if err != nil {
-				fmt.Fprint(os.Stderr,"Could not get source")
+				fmt.Fprint(os.Stderr, "Could not get source")
 				continue
 			}
 
 			t.Dest, err = destination.Read(d, destid)
 			if err != nil {
-				fmt.Fprint(os.Stderr,"Could not get dest")
+				fmt.Fprint(os.Stderr, "Could not get dest")
 				continue
 			}
 
 			t.Agent, err = agent.Read(d, agentid)
 			if err != nil {
-				fmt.Fprint(os.Stderr,"Could not get agent")
+				fmt.Fprint(os.Stderr, "Could not get agent")
 				continue
 			}
 
 			t.User, err = user.Read(d, userid)
 			if err != nil {
-				fmt.Fprint(os.Stderr,"Could not get user")
+				fmt.Fprint(os.Stderr, "Could not get user")
 				continue
 			}
 			ts = append(ts, t)
