@@ -27,14 +27,14 @@ import (
 	"github.com/jmoiron/sqlx"
 )
 
-var GET_TABLES = map[string]string{
+var GetTablesQueries = map[string]string{
 	"mysql":  "SHOW TABLES",
 	"sqlite": "SELECT name FROM sqlite_master WHERE type='table'",
 }
 
-func get_tables(db *sqlx.DB) ([]string, error) {
+func GetTables(db *sqlx.DB) ([]string, error) {
 	tables := make([]string, 0)
-	found, err := db.Query(GET_TABLES[global.DB_TYPE])
+	found, err := db.Query(GetTablesQueries[global.DB_TYPE])
 	if err != nil {
 		return nil, err
 	}
@@ -91,7 +91,7 @@ func CreateAllTables(db *sqlx.DB) error {
 }
 
 func CheckTables(db *sqlx.DB) ([]string, error) {
-	tables, err := get_tables(db)
+	tables, err := GetTables(db)
 	if err != nil {
 		return nil, err
 	}
